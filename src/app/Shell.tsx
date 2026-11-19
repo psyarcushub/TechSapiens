@@ -15,6 +15,7 @@ const MAX_TABS = 4
 const HOME_ENTRY: FeatureEntry = {
   id: 'home',
   title: 'Главная',
+  short: 'Главная',
   icon: 'home',
   kind: 'page',
   order: 0,
@@ -41,10 +42,10 @@ function TabLink({ feature, active }: { feature: FeatureEntry; active: boolean }
     <Link
       to={pathFor(feature.id)}
       aria-current={active ? 'page' : undefined}
-      className="flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 pt-2 pb-1.5"
+      className="flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 pt-1.5 pb-1"
     >
       <TabIcon icon={feature.icon} active={active} />
-      <TabLabel active={active}>{feature.title}</TabLabel>
+      <TabLabel active={active}>{feature.short}</TabLabel>
     </Link>
   )
 }
@@ -64,7 +65,13 @@ function TabIcon({ icon, active }: { icon: string; active: boolean }) {
 
 function TabLabel({ active, children }: { active: boolean; children: ReactNode }) {
   return (
-    <span className={cn('max-w-full truncate px-1 text-[11px] leading-4 font-bold', active ? 'text-fg' : 'text-muted')}>
+    // long names wrap to a second line instead of being cut off
+    <span
+      className={cn(
+        'line-clamp-2 max-w-full px-0.5 text-center text-[11px] leading-[13px] font-bold break-words',
+        active ? 'text-fg' : 'text-muted',
+      )}
+    >
       {children}
     </span>
   )
@@ -158,7 +165,7 @@ export function Shell({ children }: { children: ReactNode }) {
               type="button"
               onClick={() => setMoreOpen(true)}
               aria-haspopup="dialog"
-              className="flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 pt-2 pb-1.5"
+              className="flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 pt-1.5 pb-1"
             >
               <TabIcon icon="more_horiz" active={moreActive} />
               <TabLabel active={moreActive}>Ещё</TabLabel>

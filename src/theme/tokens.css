@@ -80,7 +80,7 @@
 
   /* раскладка */
   --header-h: 56px;
-  --tabbar-h: 64px;
+  --tabbar-h: 72px; /* значок и подпись в две строки */
   --sidebar-w: 272px;
   --content-max: 880px;
 }

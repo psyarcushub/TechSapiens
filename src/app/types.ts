@@ -12,6 +12,8 @@ export interface FeatureManifest {
   id: string
   /** Название в меню и в шапке карточки. Пишите строкой прямо здесь: `title: 'Мемы дня'`. */
   title: string
+  /** Подпись в нижнем меню телефона: одно-два коротких слова, до 12 знаков, например `short: 'Мемы'`. Без неё берётся title. */
+  short?: string
   /** Имя иконки Material Symbols, например 'rocket_launch' или 'favorite'. */
   icon: string
   /** 'page' — пункт меню и страница #/f/<id>; 'widget' — карточка на главной. */
@@ -28,6 +30,8 @@ export interface FeatureManifest {
 export interface FeatureEntry {
   id: string
   title: string
+  /** Подпись в нижнем меню: short из манифеста или title. */
+  short: string
   icon: string
   kind: FeatureKind
   order: number

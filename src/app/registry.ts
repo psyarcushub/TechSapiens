@@ -71,9 +71,11 @@ function toEntry(id: string, mod: Record<string, unknown> | undefined): FeatureE
   }
   const kind: FeatureKind = manifest.kind === 'widget' ? 'widget' : 'page'
   const order = typeof manifest.order === 'number' && Number.isFinite(manifest.order) ? manifest.order : 500
+  const title = cleanText(manifest.title, id, 80)
   return {
     id,
-    title: cleanText(manifest.title, id, 80),
+    title,
+    short: cleanText(manifest.short, title, 16),
     icon: cleanText(manifest.icon, 'extension', 60),
     kind,
     order,
