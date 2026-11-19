@@ -1,0 +1,63 @@
+/*
+  Иконки Material Symbols Rounded (пакет material-symbols 0.48.3, Apache 2.0,
+  текст лицензии рядом в LICENSE). Шрифт свой, без запросов в интернет.
+
+  Исходный шрифт из пакета весит 5,4 МБ, это слишком много для телефона.
+  Здесь лежит его облегчённая копия (543 КБ): ось заливки FILL оставлена,
+  толщина зафиксирована на 400, GRAD = 0, opsz = 24. Все 3940 иконок на месте.
+  Как пересобрать, если обновится пакет (нужен Python с fonttools и brotli):
+
+    python -m fontTools.varLib.instancer \
+      node_modules/material-symbols/material-symbols-rounded.woff2 \
+      opsz=24 GRAD=0 wght=400 -o src/ui/icons/material-symbols-rounded.woff2
+
+  Список имён в names.ts собран из node_modules/material-symbols/index.d.ts.
+*/
+
+@font-face {
+  font-family: "Material Symbols Rounded";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("./material-symbols-rounded.woff2") format("woff2");
+}
+
+.ms-icon,
+.material-symbols-rounded {
+  font-family: "Material Symbols Rounded";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "liga";
+  font-variation-settings: "FILL" 0;
+}
+
+/* Неизвестное имя или незагруженный шрифт не растягивают вёрстку: коробка ровно 1em. */
+.ms-icon {
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  flex-shrink: 0;
+  user-select: none;
+  vertical-align: middle;
+  visibility: hidden;
+}
+
+.ms-icon[data-fill="true"] {
+  font-variation-settings: "FILL" 1;
+}
+
+/* Пока шрифт не загрузился, вместо иконок не видно названий-заготовок. */
+.icons-ready .ms-icon {
+  visibility: inherit;
+}

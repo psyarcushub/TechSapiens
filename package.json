@@ -1,0 +1,37 @@
+{
+  "name": "techsapiens",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Стартап, который собирают участники конференции вместе с ИИ-агентом Гермесом",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "vite --configLoader runner",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+    "build": "vite build --configLoader runner",
+    "preview": "vite preview --configLoader runner",
+    "smoke": "node scripts/smoke.mjs",
+    "check": "npm run typecheck && npm run build && npm run smoke"
+  },
+  "dependencies": {
+    "@fontsource-variable/manrope": "5.3.0",
+    "material-symbols": "0.48.3",
+    "react": "19.2.9",
+    "react-dom": "19.2.9",
+    "react-router": "7.18.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.3.4",
+    "@types/node": "20.19.43",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "@vitejs/plugin-react": "5.2.0",
+    "playwright-core": "1.64.1",
+    "tailwindcss": "4.3.4",
+    "typescript": "5.9.3",
+    "vite": "7.3.7"
+  }
+}
