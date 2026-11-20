@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import type { BlockItem, ScreenBlock } from "../lib/product";
+import { Badge as KeyBadge } from "@/components/ui/badge";
 
 // Экран первой версии продукта. Гермес при выборе стартапа описывает каждый
 // экран блоками с демо-данными по теме идеи, а сайт рисует из них простой
@@ -246,6 +247,208 @@ function Chips({ block }: { block: ScreenBlock }) {
   );
 }
 
+/** Фото с разбором понарошку: фото остаётся в телефоне, разбор из заготовок. */
+function Upload({ block, inputId }: { block: ScreenBlock; inputId: string }) {
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [stage, setStage] = useState<"idle" | "busy" | "done">("idle");
+  const [pick, setPick] = useState(0);
+  useEffect(() => {
+    if (stage !== "busy") return;
+    const timer = window.setTimeout(() => setStage("done"), 1600);
+    return () => window.clearTimeout(timer);
+  }, [stage]);
+  useEffect(
+    () => () => {
+      if (photo) URL.revokeObjectURL(photo);
+    },
+    [photo],
+  );
+  const onFile = (file: File | undefined) => {
+    if (!file) return;
+    try {
+      setPhoto(URL.createObjectURL(file));
+    } catch {
+      setPhoto(null);
+    }
+    setPick((file.size + file.name.length) % Math.max(1, block.items.length));
+    setStage("busy");
+  };
+  const result = block.items[pick];
+  return (
+    <Card>
+      <CardHeader>
+        {block.title && <CardTitle className="text-lg">{block.title}</CardTitle>}
+        {block.text && <CardDescription>{block.text}</CardDescription>}
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        {photo && (
+          <img src={photo} alt="" className="max-h-72 w-full rounded-xl object-cover" />
+        )}
+        {stage === "busy" && (
+          <p className="text-base text-muted-foreground">Анализируем фото…</p>
+        )}
+        {stage === "done" && result && (
+          <div className="flex flex-col gap-1.5 rounded-xl bg-secondary p-4">
+            {result.badge && (
+              <span>
+                <Badge variant="secondary">{result.badge}</Badge>
+              </span>
+            )}
+            <p className="text-base font-semibold text-foreground">{result.title}</p>
+            {result.text && (
+              <p className="text-sm text-muted-foreground">{result.text}</p>
+            )}
+          </div>
+        )}
+        {stage === "done" && block.done && (
+          <p className="text-sm text-muted-foreground">{block.done}</p>
+        )}
+        <Button asChild size="lg" className="self-start">
+          <label htmlFor={inputId}>
+            {stage === "done" ? "Загрузить другое фото" : block.button || "Загрузить фото"}
+          </label>
+        </Button>
+        <input
+          id={inputId}
+          type="file"
+          accept="image/*"
+          className="sr-only"
+          onChange={(e) => {
+            onFile(e.target.files?.[0]);
+            e.target.value = "";
+          }}
+        />
+      </CardContent>
+    </Card>
+  );
+}
+
+/** Результат с наибольшим числом совпадений ключей ответов; при равенстве первый. */
+function pickResult(results: BlockItem[], keys: string[]): BlockItem | undefined {
+  let best: BlockItem | undefined;
+  let bestScore = -1;
+  for (const r of results) {
+    const meta = r.meta.toUpperCase();
+    const score = keys.filter((k) => k && meta.includes(k.toUpperCase())).length;
+    if (score > bestScore) {
+      best = r;
+      bestScore = score;
+    }
+  }
+  return best;
+}
+
+/** Тест: ответы на вопросы, потом результат по ключам ответов. */
+function Quiz({ block }: { block: ScreenBlock }) {
+  const [answers, setAnswers] = useState<(number | null)[]>(() =>
+    block.items.map(() => null),
+  );
+  const [shown, setShown] = useState(false);
+  const all = answers.every((a) => a !== null);
+  const keys = block.items.map((q, i) => {
+    const a = answers[i];
+    return a === null || a === undefined ? "" : (q.options[a]?.key ?? "");
+  });
+  // буквы шкал складываются в тип, например ENTJ; длинные ключи не показываем
+  const code = keys.every((k) => k.length > 0 && k.length <= 2) ? keys.join("") : "";
+  const result = pickResult(block.results, keys);
+  return (
+    <Card>
+      <CardHeader>
+        {block.title && <CardTitle className="text-lg">{block.title}</CardTitle>}
+        {block.text && <CardDescription>{block.text}</CardDescription>}
+      </CardHeader>
+      <CardContent className="flex flex-col gap-5">
+        {block.items.map((q, i) => (
+          <div key={`${q.title}-${i}`} className="flex flex-col gap-2">
+            <p className="text-[15px] font-semibold text-foreground">
+              {i + 1}. {q.title}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {q.options.map((o, j) => (
+                <Button
+                  key={`${o.text}-${j}`}
+                  size="sm"
+                  variant={answers[i] === j ? "default" : "outline"}
+                  aria-pressed={answers[i] === j}
+                  onClick={() => {
+                    setAnswers((prev) => prev.map((a, k) => (k === i ? j : a)));
+                    setShown(false);
+                  }}
+                >
+                  {o.text}
+                </Button>
+              ))}
+            </div>
+          </div>
+        ))}
+        {shown && result ? (
+          <div className="flex flex-col gap-1.5 rounded-xl bg-secondary p-4">
+            {code && (
+              <span>
+                <KeyBadge>{code}</KeyBadge>
+              </span>
+            )}
+            <p className="text-base font-semibold text-foreground">{result.title}</p>
+            {result.text && (
+              <p className="text-sm text-muted-foreground">{result.text}</p>
+            )}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <Button
+              size="lg"
+              className="self-start"
+              disabled={!all}
+              onClick={() => setShown(true)}
+            >
+              {block.button || "Узнать результат"}
+            </Button>
+            {!all && (
+              <p className="text-sm text-muted-foreground">
+                Ответьте на все вопросы, чтобы увидеть результат.
+              </p>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+/** График на условных данных: горизонтальные столбцы, число берётся из meta. */
+function Chart({ block }: { block: ScreenBlock }) {
+  const rows = block.items.map((item) => {
+    const v = Number.parseFloat(item.meta.replace(",", ".").replace(/[^0-9.-]/g, ""));
+    return { item, v: Number.isFinite(v) && v > 0 ? v : 0 };
+  });
+  const max = Math.max(1, ...rows.map((r) => r.v));
+  return (
+    <section className="flex flex-col gap-3">
+      {block.title && <h3 className="text-lg leading-snug">{block.title}</h3>}
+      <Card size="sm">
+        <CardContent className="flex flex-col gap-3">
+          {rows.map(({ item, v }, i) => (
+            <div key={`${item.title}-${i}`} className="flex flex-col gap-1">
+              <div className="flex justify-between gap-3 text-sm">
+                <span className="text-foreground">{item.title}</span>
+                <span className="shrink-0 font-semibold text-primary">{item.meta}</span>
+              </div>
+              <div className="h-2.5 rounded-full bg-secondary">
+                <div
+                  className="h-2.5 rounded-full bg-primary"
+                  style={{ width: `${v > 0 ? Math.max(4, (v / max) * 100) : 0}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+      {block.text && <p className="text-sm text-muted-foreground">{block.text}</p>}
+    </section>
+  );
+}
+
 /** Экран из блоков. */
 export function ScreenBlocks({
   blocks,
@@ -273,6 +476,14 @@ export function ScreenBlocks({
             return <Stats key={key} block={block} />;
           case "chips":
             return <Chips key={key} block={block} />;
+          case "upload":
+            return (
+              <Upload key={key} block={block} inputId={`${screenId}-upload-${i}`} />
+            );
+          case "quiz":
+            return <Quiz key={key} block={block} />;
+          case "chart":
+            return <Chart key={key} block={block} />;
           default:
             return null;
         }

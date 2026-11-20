@@ -21,9 +21,17 @@ export interface BlockItem {
   badge: string
   /** Надпись на кнопке карточки; пусто, если кнопки нет. */
   button: string
+  /** Ответы на вопрос теста (блок quiz). */
+  options: QuizOption[]
 }
 
-export type BlockKind = 'intro' | 'cards' | 'list' | 'form' | 'stats' | 'chips'
+/** Ответ на вопрос теста: key — короткая метка, по ним выбирается результат. */
+export interface QuizOption {
+  text: string
+  key: string
+}
+
+export type BlockKind = 'intro' | 'cards' | 'list' | 'form' | 'stats' | 'chips' | 'upload' | 'quiz' | 'chart'
 
 /** Кусок экрана первой версии: Гермес описывает его данными, сайт рисует сам. */
 export interface ScreenBlock {
@@ -37,6 +45,8 @@ export interface ScreenBlock {
   /** Поля формы. */
   fields: string[]
   items: BlockItem[]
+  /** Результаты теста (блок quiz): meta — ключи ответов, которые к нему ведут. */
+  results: BlockItem[]
 }
 
 /** Экран первой версии продукта: работает сразу, пока нет функции с тем же id. */
@@ -108,7 +118,7 @@ function count(value: unknown): number {
 
 const SCREEN_ID = /^[a-z0-9][a-z0-9-]{1,60}$/
 const BUILT_IN = new Set(['home', 'about'])
-const BLOCK_KINDS = new Set<BlockKind>(['intro', 'cards', 'list', 'form', 'stats', 'chips'])
+const BLOCK_KINDS = new Set<BlockKind>(['intro', 'cards', 'list', 'form', 'stats', 'chips', 'upload', 'quiz', 'chart'])
 
 function strings(value: unknown, max: number, limit: number): string[] {
   if (!Array.isArray(value)) return []
@@ -116,6 +126,26 @@ function strings(value: unknown, max: number, limit: number): string[] {
     .filter((x): x is string => typeof x === 'string' && x.trim() !== '')
     .map((x) => x.trim().slice(0, max))
     .slice(0, limit)
+}
+
+/** Строки блока: карточки, пункты, вопросы теста с ответами. */
+function blockItems(value: unknown): BlockItem[] {
+  return (Array.isArray(value) ? value : [])
+    .map((i) => record(i))
+    .map((i) => ({
+      title: text(i.title, '', 120),
+      text: text(i.text, '', 240),
+      meta: text(i.meta, '', 40),
+      badge: text(i.badge, '', 24),
+      button: text(i.button, '', 24),
+      options: (Array.isArray(i.options) ? i.options : [])
+        .map((o) => record(o))
+        .map((o) => ({ text: text(o.text, '', 80), key: text(o.key, '', 8) }))
+        .filter((o) => o.text)
+        .slice(0, 4),
+    }))
+    .filter((i) => i.title)
+    .slice(0, 8)
 }
 
 /** Блоки экрана: только известные виды, с ограничением длины и числа строк. */
@@ -126,17 +156,10 @@ function normalizeBlocks(value: unknown): ScreenBlock[] {
     const b = record(raw)
     const kind = text(b.kind, '', 10) as BlockKind
     if (!BLOCK_KINDS.has(kind)) continue
-    const items = (Array.isArray(b.items) ? b.items : [])
-      .map((i) => record(i))
-      .map((i) => ({
-        title: text(i.title, '', 80),
-        text: text(i.text, '', 240),
-        meta: text(i.meta, '', 40),
-        badge: text(i.badge, '', 24),
-        button: text(i.button, '', 24),
-      }))
-      .filter((i) => i.title)
-      .slice(0, 8)
+    let items = blockItems(b.items)
+    // a quiz question needs at least two answers
+    if (kind === 'quiz') items = items.filter((i) => i.options.length >= 2)
+    const results = kind === 'quiz' ? blockItems(b.results) : []
     const block: ScreenBlock = {
       kind,
       title: text(b.title, '', 80),
@@ -145,11 +168,13 @@ function normalizeBlocks(value: unknown): ScreenBlock[] {
       done: text(b.done, '', 120),
       fields: strings(b.fields, 40, 5),
       items,
+      results,
     }
     const empty =
       (kind === 'intro' && !block.title && !block.text) ||
       (kind === 'form' && block.fields.length === 0) ||
-      ((kind === 'cards' || kind === 'list' || kind === 'stats' || kind === 'chips') && items.length === 0)
+      (kind === 'quiz' && (items.length < 2 || results.length === 0)) ||
+      ((kind === 'cards' || kind === 'list' || kind === 'stats' || kind === 'chips' || kind === 'upload' || kind === 'chart') && items.length === 0)
     if (!empty) out.push(block)
     if (out.length === 6) break
   }
