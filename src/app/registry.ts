@@ -32,6 +32,19 @@ function cleanText(value: unknown, fallback: string, max: number): string {
   return text ? text.slice(0, max) : fallback
 }
 
+/** Подпись в нижнем меню: до 16 знаков и только целыми словами, без обрыва посреди слова. */
+function shortLabel(value: unknown, title: string): string {
+  const full = cleanText(value, title, 200)
+  if (full.length <= 16) return full
+  let out = ''
+  for (const word of full.split(/\s+/)) {
+    const next = out ? `${out} ${word}` : word
+    if (next.length > 16) break
+    out = next
+  }
+  return out || full.slice(0, 16)
+}
+
 function cleanAuthors(value: unknown): string[] {
   if (!Array.isArray(value)) return []
   const seen = new Set<string>()
@@ -77,7 +90,7 @@ function toEntry(id: string, mod: Record<string, unknown> | undefined): FeatureE
   return {
     id,
     title,
-    short: cleanText(manifest.short, title, 16),
+    short: shortLabel(manifest.short, title),
     icon: cleanText(manifest.icon, 'extension', 60),
     kind,
     order,
