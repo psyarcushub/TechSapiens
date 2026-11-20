@@ -4,11 +4,12 @@ import { Icon, cn } from '../ui'
 import { gameLinks } from '../lib/links'
 import { product, type ProductScreen } from '../lib/product'
 import { pathFor, useFeatures } from './features-context'
+import { ScreenBlocks } from './ScreenBlocks'
 
-// Каркас первой версии. Гермес выбирает стартап и описывает 3–5 экранов в
-// src/product.json; пока у экрана нет своей функции, он показан заготовкой:
-// серые блоки, зачем экран и примеры промптов. Функция с тем же id заменяет
-// заготовку сама (см. registry.ts).
+// Первая версия продукта. Гермес выбирает стартап и описывает 3–5 экранов в
+// src/product.json вместе с их содержимым (блоки с демо-данными); пока у
+// экрана нет своей функции, сайт рисует его из этих блоков, а ниже подсказывает,
+// какой промпт прислать. Функция с тем же id заменяет экран сама (см. registry.ts).
 
 /** Компонент страницы-заготовки для одного экрана. */
 export function wireframeComponent(screen: ProductScreen): ComponentType {
@@ -39,7 +40,7 @@ function Sketch() {
       className="flex flex-col gap-4 rounded-card border-2 border-dashed border-line bg-surface p-4"
       aria-label="Заготовка экрана: здесь появится интерфейс"
     >
-      <Label>Экран пока пустой</Label>
+      <Label>Набросок экрана</Label>
       <div className="h-28 rounded-[12px] bg-surface-2" />
       {[0, 1, 2].map((i) => (
         <div key={i} className="flex items-center gap-3">
@@ -97,8 +98,28 @@ function Examples({ screen }: { screen: ProductScreen }) {
   )
 }
 
-/** Страница-заготовка экрана каркаса. */
+/** Как развить экран: примеры промптов и куда их присылать. */
+function Grow({ screen }: { screen: ProductScreen }) {
+  return (
+    <section className="flex flex-col gap-4 rounded-card bg-surface-2 p-5">
+      <Label>Как развить этот экран</Label>
+      <p className="text-[15px] leading-snug text-fg">Это первая версия экрана. Пришлите боту промпт: что здесь добавить или изменить.</p>
+      <Examples screen={screen} />
+      <SendPrompt />
+    </section>
+  )
+}
+
+/** Экран первой версии: содержимое из блоков, а ниже подсказка, как его развить. */
 export function WireframeScreen({ screen }: { screen: ProductScreen }) {
+  if (screen.blocks.length > 0) {
+    return (
+      <div className="flex flex-col gap-10">
+        <ScreenBlocks blocks={screen.blocks} screenId={screen.id} />
+        <Grow screen={screen} />
+      </div>
+    )
+  }
   return (
     <div className="flex flex-col gap-6">
       <p className="text-[17px] leading-relaxed text-muted">
@@ -126,7 +147,7 @@ export function BuiltAt({ className }: { className?: string }) {
   return <p className={cn('text-[13px] text-muted', className)}>Сайт обновлён в {label}</p>
 }
 
-/** Доска экранов на главной: что уже собрано, а что ждёт промпта. */
+/** Доска экранов на главной: все экраны первой версии и какие уже доработаны промптами. */
 export function ScreensBoard() {
   const { pages } = useFeatures()
   const screens = product.screens
@@ -138,9 +159,9 @@ export function ScreensBoard() {
     <section className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <Label>Ход работы</Label>
-        <h2 className="text-[24px] leading-tight font-semibold text-fg">Экраны, которые мы собираем</h2>
+        <h2 className="text-[24px] leading-tight font-semibold text-fg">Экраны продукта</h2>
         <p className="text-[15px] text-muted">
-          Готово {ready} из {screens.length}. Пустой экран ждёт вашего промпта.
+          Первая версия уже работает. Доработано промптами участников: {ready} из {screens.length}.
         </p>
         <BuiltAt />
       </div>
@@ -153,7 +174,7 @@ export function ScreensBoard() {
               to={pathFor(screen.id)}
               className={cn(
                 'flex flex-col gap-3 rounded-card bg-surface p-4 transition-transform active:scale-[0.99]',
-                empty ? 'border-2 border-dashed border-line' : 'shadow-card ring-1 ring-line/70',
+                'shadow-card ring-1 ring-line/70',
               )}
             >
               <span className="flex items-center gap-3">
@@ -172,7 +193,7 @@ export function ScreensBoard() {
                     empty ? 'bg-surface-2 text-muted' : 'bg-brand text-on-brand',
                   )}
                 >
-                  {empty ? 'Ждёт промпта' : 'Готово'}
+                  {empty ? 'Первая версия' : 'С промптами'}
                 </span>
               </span>
               {screen.purpose && <span className="text-[15px] leading-snug text-muted">{screen.purpose}</span>}

@@ -12,7 +12,34 @@ export interface ProductCluster {
   contribution: string
 }
 
-/** Экран каркаса первой версии: заготовка, пока нет функции с тем же id. */
+/** Строка внутри блока: карточка, пункт списка, число, метка. */
+export interface BlockItem {
+  title: string
+  text: string
+  /** Мелкая подпись: время, место, число. */
+  meta: string
+  badge: string
+  /** Надпись на кнопке карточки; пусто, если кнопки нет. */
+  button: string
+}
+
+export type BlockKind = 'intro' | 'cards' | 'list' | 'form' | 'stats' | 'chips'
+
+/** Кусок экрана первой версии: Гермес описывает его данными, сайт рисует сам. */
+export interface ScreenBlock {
+  kind: BlockKind
+  title: string
+  text: string
+  /** Кнопка блока: главная во вступлении, «Отправить» у формы. */
+  button: string
+  /** Что показать после нажатия кнопки формы. */
+  done: string
+  /** Поля формы. */
+  fields: string[]
+  items: BlockItem[]
+}
+
+/** Экран первой версии продукта: работает сразу, пока нет функции с тем же id. */
 export interface ProductScreen {
   id: string
   title: string
@@ -24,6 +51,8 @@ export interface ProductScreen {
   purpose: string
   /** Примеры промптов, которые участник может прислать для экрана. */
   examples: string[]
+  /** Содержимое экрана в первой версии. */
+  blocks: ScreenBlock[]
 }
 
 export interface Product {
@@ -79,6 +108,53 @@ function count(value: unknown): number {
 
 const SCREEN_ID = /^[a-z0-9][a-z0-9-]{1,60}$/
 const BUILT_IN = new Set(['home', 'about'])
+const BLOCK_KINDS = new Set<BlockKind>(['intro', 'cards', 'list', 'form', 'stats', 'chips'])
+
+function strings(value: unknown, max: number, limit: number): string[] {
+  if (!Array.isArray(value)) return []
+  return value
+    .filter((x): x is string => typeof x === 'string' && x.trim() !== '')
+    .map((x) => x.trim().slice(0, max))
+    .slice(0, limit)
+}
+
+/** Блоки экрана: только известные виды, с ограничением длины и числа строк. */
+function normalizeBlocks(value: unknown): ScreenBlock[] {
+  if (!Array.isArray(value)) return []
+  const out: ScreenBlock[] = []
+  for (const raw of value) {
+    const b = record(raw)
+    const kind = text(b.kind, '', 10) as BlockKind
+    if (!BLOCK_KINDS.has(kind)) continue
+    const items = (Array.isArray(b.items) ? b.items : [])
+      .map((i) => record(i))
+      .map((i) => ({
+        title: text(i.title, '', 80),
+        text: text(i.text, '', 240),
+        meta: text(i.meta, '', 40),
+        badge: text(i.badge, '', 24),
+        button: text(i.button, '', 24),
+      }))
+      .filter((i) => i.title)
+      .slice(0, 8)
+    const block: ScreenBlock = {
+      kind,
+      title: text(b.title, '', 80),
+      text: text(b.text, '', 400),
+      button: text(b.button, '', 28),
+      done: text(b.done, '', 120),
+      fields: strings(b.fields, 40, 5),
+      items,
+    }
+    const empty =
+      (kind === 'intro' && !block.title && !block.text) ||
+      (kind === 'form' && block.fields.length === 0) ||
+      ((kind === 'cards' || kind === 'list' || kind === 'stats' || kind === 'chips') && items.length === 0)
+    if (!empty) out.push(block)
+    if (out.length === 6) break
+  }
+  return out
+}
 
 /** Экраны каркаса: только с понятным id и названием, без повторов, не больше 6. */
 function normalizeScreens(value: unknown): ProductScreen[] {
@@ -102,6 +178,7 @@ function normalizeScreens(value: unknown): ProductScreen[] {
         .filter((x): x is string => typeof x === 'string' && x.trim() !== '')
         .map((x) => x.trim().slice(0, 200))
         .slice(0, 3),
+      blocks: normalizeBlocks(s.blocks),
     })
     if (out.length === 6) break
   }
