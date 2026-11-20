@@ -29,7 +29,7 @@ export function ProductHero() {
       />
       <div className="relative">
         <p className="label-caps text-[12px]">
-          Tech<span className="text-[var(--logo-pink)]">Sapiens</span>
+          Tech<span className="text-[var(--logo-pink)]">Sapiens</span> Project
         </p>
         <span className="mt-6 mb-5 flex size-16 items-center justify-center rounded-full bg-white/10 ring-2 ring-brand lg:size-20">
           <Icon name={product.icon} size={34} fill />

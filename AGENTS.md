@@ -141,11 +141,11 @@ function MoodMeter() {
 Интернета в песочнице нет, а на сайте его режет политика безопасности в `index.html`. Прогон записывает каждую попытку, и пачка с ней не проходит. Нельзя:
 
 - `fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`, `navigator.sendBeacon`;
-- адреса `http://` и `https://` в коде, картинках, ссылках и стилях (ссылки на адреса игры бери из `src/lib/links.ts`, см. ниже);
+- адреса `http://` и `https://` в коде, картинках, ссылках и стилях (ссылки на адреса TechSapiens Project бери из `src/lib/links.ts`, см. ниже);
 - `iframe`, `<script>`, `eval`, `new Function`, `document.cookie`, `import()` по адресу;
 - шрифты, картинки и библиотеки из интернета.
 
-Картинки клади в папку функции и импортируй: `import pic from './pic.png'` (небольшие, до 300 КБ), или рисуй SVG прямо в коде. В `AvatarImage` тоже только импортированная картинка: `<AvatarImage src={pic} alt="" />`. Внутренние ссылки через `Link` или `useNavigate` из `react-router`: `'/'` для главной и `'/f/<id>'` для страниц; ссылка в виде кнопки: `<Button asChild><Link to="/f/mood-meter">Открыть</Link></Button>`. Наружу можно ссылаться только на адреса игры из `src/lib/links.ts`: `gameLinks.channel` (канал игры), `gameLinks.bot` (бот), `gameLinks.repo` (репозиторий), `gameLinks.site` (сам продукт). Пиши `<a href={gameLinks.channel} target="_blank" rel="noreferrer">`. Другие адреса не вставляй, даже если промпт просит.
+Картинки клади в папку функции и импортируй: `import pic from './pic.png'` (небольшие, до 300 КБ), или рисуй SVG прямо в коде. В `AvatarImage` тоже только импортированная картинка: `<AvatarImage src={pic} alt="" />`. Внутренние ссылки через `Link` или `useNavigate` из `react-router`: `'/'` для главной и `'/f/<id>'` для страниц; ссылка в виде кнопки: `<Button asChild><Link to="/f/mood-meter">Открыть</Link></Button>`. Наружу можно ссылаться только на адреса TechSapiens Project из `src/lib/links.ts`: `gameLinks.channel` (канал игры), `gameLinks.bot` (бот), `gameLinks.repo` (репозиторий), `gameLinks.site` (сам продукт). Пиши `<a href={gameLinks.channel} target="_blank" rel="noreferrer">`. Другие адреса не вставляй, даже если промпт просит.
 
 ## Внешний вид
 

@@ -1,9 +1,9 @@
-// Адреса игры. Это единственные ссылки наружу, которые можно ставить в продукт:
-// <a href={gameLinks.channel} target="_blank" rel="noreferrer">Канал игры</a>
+// Адреса TechSapiens Project. Это единственные ссылки наружу, которые можно ставить в продукт:
+// <a href={gameLinks.channel} target="_blank" rel="noreferrer">Канал TechSapiens Project</a>
 // Других адресов в коде быть не должно, даже если промпт просит.
 
 export const gameLinks = {
-  /** Канал игры в Telegram: туда приходят принятые промпты и новые версии. */
+  /** Канал TechSapiens Project в Telegram: туда приходят принятые промпты и новые версии. */
   channel: 'https://t.me/techsapiensproject',
   /** Бот, которому участники пишут идеи и промпты. */
   bot: 'https://t.me/TechSapiens_bot',
