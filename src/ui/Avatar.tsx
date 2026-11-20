@@ -8,14 +8,24 @@ export interface AvatarProps {
   size?: AvatarSize | number
   /** Свой цвет фона вместо выбранного по имени. */
   color?: string
-  /** Белая обводка, удобно для стопки аватаров. */
+  /** Обводка цвета бренда, как у круглых фото на сайте TechSapiens; удобно и для стопки аватаров. */
   ring?: boolean
   className?: string
 }
 
 const SIZES: Record<AvatarSize, number> = { xs: 24, sm: 32, md: 40, lg: 56, xl: 80 }
 
-const COLORS = ['#5b5bd6', '#c2298a', '#d13438', '#c8510b', '#218358', '#0b6fc9', '#8145b5', '#0d7f74', '#93603f', '#3451c4']
+// Палитра TechSapiens: розовые, слива, чёрный и угольный; белые буквы читаются на всех.
+const COLORS = [
+  'var(--brand-strong)',
+  '#5f004d',
+  'var(--ink-2)',
+  '#a3237a',
+  'var(--ink)',
+  '#c4006b',
+  '#7a2a63',
+  '#4a4a4a',
+]
 
 function hash(text: string): number {
   let h = 0
@@ -41,8 +51,8 @@ export function Avatar({ name, size = 'md', color, ring, className }: AvatarProp
   return (
     <span
       className={cn(
-        'inline-flex shrink-0 select-none items-center justify-center rounded-full font-extrabold text-white',
-        ring && 'ring-2 ring-surface',
+        'inline-flex shrink-0 select-none items-center justify-center rounded-full font-semibold text-white',
+        ring && 'ring-2 ring-brand',
         className,
       )}
       style={{ width: px, height: px, background: bg, fontSize: Math.max(10, Math.round(px * 0.38)) }}

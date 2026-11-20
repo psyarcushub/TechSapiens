@@ -17,8 +17,10 @@ export function Section({ title, subtitle, action, children, className }: Sectio
       {(title || action) && (
         <div className="flex items-end gap-3 px-1">
           <div className="min-w-0 flex-1">
-            {title && <h2 className="text-[19px] leading-tight font-extrabold tracking-tight text-fg">{title}</h2>}
-            {subtitle && <p className="mt-1 text-[14px] leading-snug text-muted">{subtitle}</p>}
+            {title && (
+              <h2 className="text-[24px] leading-tight font-semibold tracking-tight text-fg lg:text-[32px]">{title}</h2>
+            )}
+            {subtitle && <p className="mt-1 text-[15px] leading-snug text-muted">{subtitle}</p>}
           </div>
           {action && <div className="shrink-0">{action}</div>}
         </div>

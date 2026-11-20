@@ -60,7 +60,7 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
       >
         <div className="mx-auto mt-2.5 h-1.5 w-10 shrink-0 rounded-full bg-surface-3 sm:hidden" aria-hidden />
         <div className="flex shrink-0 items-center gap-3 px-5 pt-3 pb-2 sm:pt-5">
-          <div className="min-w-0 flex-1 text-[18px] leading-snug font-extrabold">{title}</div>
+          <div className="min-w-0 flex-1 text-[20px] leading-snug font-semibold">{title}</div>
           <button
             type="button"
             onClick={onClose}

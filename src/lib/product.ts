@@ -12,6 +12,20 @@ export interface ProductCluster {
   contribution: string
 }
 
+/** Экран каркаса первой версии: заготовка, пока нет функции с тем же id. */
+export interface ProductScreen {
+  id: string
+  title: string
+  /** Подпись в нижнем меню. */
+  short: string
+  /** Имя иконки Material Symbols. */
+  icon: string
+  /** Одна фраза: зачем этот экран. */
+  purpose: string
+  /** Примеры промптов, которые участник может прислать для экрана. */
+  examples: string[]
+}
+
 export interface Product {
   name: string
   tagline: string
@@ -20,6 +34,8 @@ export interface Product {
   /** Имя иконки Material Symbols. */
   icon: string
   colors: { primary: string; accent: string }
+  /** Каркас первой версии; пустой, пока Гермес не выбрал стартап. */
+  screens: ProductScreen[]
   about: {
     summary: string
     ideasCount: number
@@ -35,7 +51,8 @@ const DEFAULTS: Product = {
   problem: 'Гермес читает идеи участников и скоро расскажет, какую проблему решает наш стартап.',
   audience: 'Все, кто прислал идею, и все, кто к ним присоединится.',
   icon: 'rocket_launch',
-  colors: { primary: '#5b5bd6', accent: '#ff7a59' },
+  colors: { primary: '#ff008b', accent: '#ff4fb3' },
+  screens: [],
   about: {
     summary: 'Участники конференции присылают идеи и промпты, а ИИ-агент Гермес собирает из них стартап.',
     ideasCount: 0,
@@ -60,6 +77,37 @@ function count(value: unknown): number {
   return Number.isFinite(n) && n > 0 ? Math.round(n) : 0
 }
 
+const SCREEN_ID = /^[a-z0-9][a-z0-9-]{1,60}$/
+const BUILT_IN = new Set(['home', 'about'])
+
+/** Экраны каркаса: только с понятным id и названием, без повторов, не больше 6. */
+function normalizeScreens(value: unknown): ProductScreen[] {
+  if (!Array.isArray(value)) return []
+  const seen = new Set<string>()
+  const out: ProductScreen[] = []
+  for (const item of value) {
+    const s = record(item)
+    const id = text(s.id, '', 61)
+    const title = text(s.title, '', 60)
+    if (!SCREEN_ID.test(id) || BUILT_IN.has(id) || seen.has(id) || !title) continue
+    seen.add(id)
+    const examples = Array.isArray(s.examples) ? s.examples : []
+    out.push({
+      id,
+      title,
+      short: text(s.short, title, 16),
+      icon: text(s.icon, 'widgets', 60),
+      purpose: text(s.purpose, '', 300),
+      examples: examples
+        .filter((x): x is string => typeof x === 'string' && x.trim() !== '')
+        .map((x) => x.trim().slice(0, 200))
+        .slice(0, 3),
+    })
+    if (out.length === 6) break
+  }
+  return out
+}
+
 export function normalizeProduct(input: unknown): Product {
   const p = record(input)
   const colors = record(p.colors)
@@ -77,6 +125,7 @@ export function normalizeProduct(input: unknown): Product {
       primary: text(colors.primary, DEFAULTS.colors.primary, 20),
       accent: text(colors.accent, DEFAULTS.colors.accent, 20),
     },
+    screens: normalizeScreens(p.screens),
     about: {
       summary: text(about.summary, DEFAULTS.about.summary, 1200),
       ideasCount: count(about.ideasCount),

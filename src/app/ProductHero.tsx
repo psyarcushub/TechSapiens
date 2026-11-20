@@ -1,41 +1,45 @@
 import { Icon, cn } from '../ui'
 import { product } from '../lib/product'
 
-/** Квадратик с иконкой продукта на градиенте бренда. */
+/** Кружок с иконкой продукта в цвете бренда. */
 export function ProductMark({ size = 36, className }: { size?: number; className?: string }) {
   return (
     <span
-      className={cn('flex shrink-0 items-center justify-center text-on-hero shadow-card', className)}
-      style={{
-        width: size,
-        height: size,
-        borderRadius: Math.round(size * 0.32),
-        background: 'linear-gradient(135deg, var(--brand), var(--hero-to))',
-      }}
+      className={cn('flex shrink-0 items-center justify-center rounded-full bg-brand text-on-brand', className)}
+      style={{ width: size, height: size }}
       aria-hidden
     >
-      <Icon name={product.icon} size={Math.round(size * 0.58)} fill />
+      <Icon name={product.icon} size={Math.round(size * 0.56)} fill />
     </span>
   )
 }
 
-/** Главный баннер: иконка, название и фраза продукта из product.json. */
+/** Главный баннер в виде афиши TechSapiens: тёмный фон с розовым свечением, название и фраза из product.json. */
 export function ProductHero() {
   return (
-    <section
-      className="relative overflow-hidden rounded-sheet px-6 pt-6 pb-7 text-on-hero shadow-float sm:px-8 sm:pt-8 sm:pb-9 lg:px-10 lg:pt-10 lg:pb-12"
-      style={{ background: 'linear-gradient(135deg, var(--brand) 0%, var(--hero-to) 100%)' }}
-    >
-      <span className="pointer-events-none absolute -top-16 -right-12 size-48 rounded-full bg-white/15" aria-hidden />
-      <span className="pointer-events-none absolute -bottom-20 -left-10 size-44 rounded-full bg-white/10" aria-hidden />
+    <section className="poster relative overflow-hidden rounded-sheet px-6 pt-6 pb-8 sm:px-8 sm:pt-8 sm:pb-10 lg:px-12 lg:pt-12 lg:pb-14">
+      {/* кольца, как круглые фото с розовой обводкой на афишах сайта */}
+      <span
+        className="pointer-events-none absolute -top-10 -right-12 size-44 rounded-full ring-2 ring-brand/70 lg:size-64"
+        aria-hidden
+      />
+      <span
+        className="pointer-events-none absolute top-24 -right-6 size-16 rounded-full ring-2 ring-brand/50 lg:top-40 lg:right-24 lg:size-20"
+        aria-hidden
+      />
       <div className="relative">
-        <span className="mb-5 flex size-16 items-center justify-center rounded-[20px] bg-white/20 ring-1 ring-white/30 lg:size-20">
-          <Icon name={product.icon} size={36} fill />
+        <p className="label-caps text-[12px]">
+          Tech<span className="text-[var(--logo-pink)]">Sapiens</span>
+        </p>
+        <span className="mt-6 mb-5 flex size-16 items-center justify-center rounded-full bg-white/10 ring-2 ring-brand lg:size-20">
+          <Icon name={product.icon} size={34} fill />
         </span>
-        <h1 className="text-[30px] leading-[1.1] font-extrabold tracking-tight text-balance sm:text-[36px] lg:text-[44px]">
+        <h1 className="max-w-2xl text-[34px] leading-[1.05] font-semibold tracking-tight text-balance sm:text-[48px] lg:text-[60px]">
           {product.name}
         </h1>
-        <p className="mt-2.5 max-w-xl text-[17px] leading-snug opacity-90 sm:text-[19px]">{product.tagline}</p>
+        <p className="mt-3 max-w-xl text-[18px] leading-normal font-light text-white/85 sm:text-[20px]">
+          {product.tagline}
+        </p>
       </div>
     </section>
   )

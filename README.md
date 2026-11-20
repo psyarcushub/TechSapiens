@@ -16,7 +16,7 @@
 
 ## Как это устроено
 
-Сайт статический: Vite, React 19, TypeScript, Tailwind 4, иконки Material Symbols, шрифт Manrope. Никаких серверов, баз и запросов в интернет, данные живут в браузере.
+Сайт статический: Vite, React 19, TypeScript, Tailwind 4, компоненты shadcn/ui, иконки lucide-react и Material Symbols, шрифт Tilda Sans, оформление в стиле TechSapiens. Никаких серверов, баз и запросов в интернет, данные живут в браузере.
 
 Каждая функция продукта лежит в своей папке `src/features/<id>/` и подхватывается сама. Если одна функция упадёт, вместо неё появится заглушка, а остальное продолжит работать. Перед выкладкой каждая версия проходит проверку типов, сборку и прогон в настоящем браузере по всем экранам; не прошедшая проверку версия на сайт не попадает.
 
@@ -30,4 +30,4 @@ npm run check   # типы, сборка и прогон в браузере
 
 ## Лицензия
 
-MIT, см. [LICENSE](LICENSE). Иконки Material Symbols распространяются по лицензии Apache 2.0 (`src/ui/icons/LICENSE`), шрифт Manrope по лицензии SIL Open Font License 1.1.
+MIT, см. [LICENSE](LICENSE). Иконки Material Symbols распространяются по лицензии Apache 2.0 (`src/ui/icons/LICENSE`), шрифт Tilda Sans (ParaType, 2021) по лицензии SIL Open Font License 1.1 (`src/assets/fonts/OFL.txt`), компоненты shadcn/ui по лицензии MIT.

@@ -1,6 +1,8 @@
 import type { ComponentType } from 'react'
 import type { FeatureEntry, FeatureKind } from './types'
 import { recordFeatureError } from './errors'
+import { wireframeComponent } from './Wireframe'
+import { product } from '../lib/product'
 import disabledRaw from '../features.disabled.json'
 
 // Функции находятся сами: каждая папка src/features/<id>/index.tsx. Центрального списка нет.
@@ -109,6 +111,22 @@ export async function loadFeatures(): Promise<void> {
     }
     const entry = toEntry(id, result.value)
     if (entry) list.push(entry)
+  })
+  // экраны каркаса без своей функции показываются заготовками; функция с тем же id их заменяет
+  const built = new Set(list.map((f) => f.id))
+  product.screens.forEach((screen, i) => {
+    if (built.has(screen.id)) return
+    list.push({
+      id: screen.id,
+      title: screen.title,
+      short: screen.short,
+      icon: screen.icon,
+      kind: 'page',
+      order: 100 + i * 10,
+      component: wireframeComponent(screen),
+      authors: [],
+      placeholder: true,
+    })
   })
   list.sort((a, b) => a.order - b.order || a.title.localeCompare(b.title, 'ru'))
   features = list

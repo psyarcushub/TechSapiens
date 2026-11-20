@@ -5,11 +5,15 @@ type RGB = [number, number, number]
 const WHITE: RGB = [255, 255, 255]
 const BLACK: RGB = [0, 0, 0]
 const INK: RGB = [21, 22, 28]
-const BG_LIGHT: RGB = [247, 247, 250]
-const BG_DARK: RGB = [16, 17, 22]
-const SURFACE_DARK: RGB = [24, 25, 31]
-const DEFAULT_PRIMARY: RGB = [91, 91, 214]
-const DEFAULT_ACCENT: RGB = [255, 122, 89]
+// Страницы в стиле TechSapiens: белый фон, тёмные секции чёрные.
+const BG_LIGHT: RGB = [255, 255, 255]
+const BG_DARK: RGB = [0, 0, 0]
+const SURFACE_DARK: RGB = [20, 20, 20]
+// По умолчанию цвета сайта TechSapiens: ярко-розовый и светло-розовый.
+const DEFAULT_PRIMARY: RGB = [255, 0, 139]
+const DEFAULT_ACCENT: RGB = [255, 79, 179]
+/** Белый текст на заливке, если контраст не ниже 3:1 (крупные надписи и кнопки, как на сайте). */
+const WHITE_TEXT_MIN_CONTRAST = 3
 
 function parseHex(value: unknown): RGB | null {
   if (typeof value !== 'string') return null
@@ -49,7 +53,13 @@ function ensureContrast(c: RGB, bg: RGB, target: number, toward: RGB): RGB {
   return out
 }
 
+/**
+ * Цвет текста на заливке. Белый, пока контраст не ниже 3:1: так розовые кнопки
+ * TechSapiens (#FF008B, контраст 3,7:1) остаются с белым текстом, как на сайте.
+ * На светлых заливках (жёлтый, светло-розовый) текст тёмный.
+ */
 function inkFor(fill: RGB): RGB {
+  if (contrast(WHITE, fill) >= WHITE_TEXT_MIN_CONTRAST) return WHITE
   return contrast(WHITE, fill) >= contrast(INK, fill) ? WHITE : INK
 }
 
@@ -91,7 +101,8 @@ function palette(prefix: 'brand' | 'accent', base: RGB): Palette {
 
 /**
  * Красит приложение в цвета продукта: из primary и accent считает оттенки
- * для светлой и тёмной темы (фон, мягкая подложка, читаемый текст, контрастные надписи).
+ * для светлой темы и тёмных секций (мягкая подложка, читаемый текст, контрастные надписи).
+ * Фон страниц от цветов продукта не зависит: белый, в тёмных секциях чёрный.
  */
 export function applyTheme(product: Product): void {
   try {
@@ -102,8 +113,9 @@ export function applyTheme(product: Product): void {
 
     const heroToL = mix(brand.fillL, acc.fillL, 0.55)
     const heroToD = mix(brand.fillD, acc.fillD, 0.55)
-    const bgL = mix(BG_LIGHT, primary, 0.03)
-    const bgD = mix(BG_DARK, primary, 0.04)
+    // фон страниц не подкрашивается цветом бренда: белый и чёрный, как на сайте
+    const bgL = BG_LIGHT
+    const bgD = BG_DARK
 
     const vars: Record<string, string> = {
       ...brand.vars,
@@ -117,11 +129,7 @@ export function applyTheme(product: Product): void {
     }
     const root = document.documentElement
     for (const [name, value] of Object.entries(vars)) root.style.setProperty(name, value)
-
-    document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
-      const dark = meta.getAttribute('media')?.includes('dark')
-      meta.setAttribute('content', toHex(dark ? bgD : bgL))
-    })
+    // Цвет строки браузера задан в index.html: чёрный, под цвет шапки.
   } catch (error) {
     console.warn('[theme] не удалось применить цвета продукта', error)
   }

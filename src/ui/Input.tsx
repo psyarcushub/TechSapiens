@@ -44,7 +44,7 @@ export function Field({
 }
 
 export const fieldClass =
-  'w-full rounded-control border bg-surface px-4 text-[16px] text-fg placeholder:text-subtle transition-[border-color,box-shadow] outline-none focus:border-brand focus:ring-4 focus:ring-brand/15 disabled:opacity-60'
+  'w-full rounded-control border bg-surface px-4 text-[16px] text-fg placeholder:text-subtle transition-[border-color,box-shadow] outline-none focus:border-brand focus:ring-3 focus:ring-brand/20 disabled:opacity-60'
 
 /** Однострочное поле ввода с подписью. Шрифт 16px, чтобы iPhone не увеличивал страницу. */
 export function Input({ label, hint, error, icon, id, className, ...rest }: InputProps) {
@@ -59,7 +59,7 @@ export function Input({ label, hint, error, icon, id, className, ...rest }: Inpu
         <input
           id={inputId}
           aria-invalid={error ? true : undefined}
-          className={cn(fieldClass, 'h-12', icon && 'pl-11', error ? 'border-danger' : 'border-line', className)}
+          className={cn(fieldClass, 'h-12', icon && 'pl-11', error ? 'border-danger' : 'border-line-strong', className)}
           {...rest}
         />
       </div>

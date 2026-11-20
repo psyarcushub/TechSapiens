@@ -14,7 +14,7 @@ export interface ProgressProps {
 const fills: Record<Tone, string> = {
   neutral: 'bg-subtle',
   brand: 'bg-brand',
-  accent: 'bg-accent',
+  accent: 'bg-[var(--accent)]',
   success: 'bg-success',
   warning: 'bg-warning',
   danger: 'bg-danger',

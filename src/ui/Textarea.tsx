@@ -19,7 +19,7 @@ export function Textarea({ label, hint, error, id, rows = 4, className, ...rest 
         id={inputId}
         rows={rows}
         aria-invalid={error ? true : undefined}
-        className={cn(fieldClass, 'min-h-24 resize-y py-3 leading-relaxed', error ? 'border-danger' : 'border-line', className)}
+        className={cn(fieldClass, 'min-h-24 resize-y py-3 leading-relaxed', error ? 'border-danger' : 'border-line-strong', className)}
         {...rest}
       />
     </Field>

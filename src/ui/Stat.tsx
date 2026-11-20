@@ -27,14 +27,14 @@ const iconTones: Record<Tone, string> = {
 /** Плитка с крупным числом. */
 export function Stat({ label, value, icon, hint, tone = 'brand', className }: StatProps) {
   return (
-    <div className={cn('flex min-w-0 flex-col rounded-card bg-surface p-4 shadow-card ring-1 ring-line/70', className)}>
+    <div className={cn('flex min-w-0 flex-col rounded-card bg-surface p-4 ring-1 ring-line', className)}>
       {icon && (
-        <span className={cn('mb-3 flex size-9 items-center justify-center rounded-[11px]', iconTones[tone])}>
+        <span className={cn('mb-3 flex size-9 items-center justify-center rounded-full', iconTones[tone])}>
           <Icon name={icon} size={20} fill />
         </span>
       )}
-      <div className="truncate text-[26px] leading-none font-extrabold tracking-tight text-fg tabular-nums">{value}</div>
-      <div className="mt-1.5 text-[13px] leading-snug text-muted">{label}</div>
+      <div className="truncate text-[30px] leading-none font-semibold tracking-tight text-fg tabular-nums">{value}</div>
+      <div className="label-caps mt-2 text-[12px] text-muted">{label}</div>
       {hint && <div className="mt-1 text-[12px] leading-snug text-subtle">{hint}</div>}
     </div>
   )

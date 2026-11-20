@@ -37,6 +37,8 @@ export interface FeatureEntry {
   order: number
   component: ComponentType
   authors: string[]
+  /** Заготовка экрана каркаса: функции с этим id ещё нет. */
+  placeholder?: boolean
 }
 
 export interface FeatureSummary {

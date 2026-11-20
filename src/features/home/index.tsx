@@ -3,6 +3,8 @@ import type { FeatureManifest } from '../../app/types'
 import { pathFor, useFeatures } from '../../app/features-context'
 import { WidgetGrid } from '../../app/FeatureView'
 import { ProductHero } from '../../app/ProductHero'
+import { ScreensBoard } from '../../app/Wireframe'
+import { product } from '../../lib/product'
 import { EmptyState, Icon, Section } from '../../ui'
 
 export const feature: FeatureManifest = {
@@ -16,23 +18,37 @@ export const feature: FeatureManifest = {
 
 function HomePage() {
   const { widgets, pages } = useFeatures()
-  const sections = pages.filter((p) => p.id !== 'home')
+  // экраны каркаса показывает доска ниже, в «Разделах» только остальное
+  const screenIds = new Set(product.screens.map((s) => s.id))
+  const sections = pages.filter((p) => p.id !== 'home' && !screenIds.has(p.id))
 
   return (
     <div className="flex flex-col gap-7">
       <ProductHero />
 
-      <Section title="Что уже умеет">
-        {widgets.length > 0 ? (
-          <WidgetGrid widgets={widgets} />
-        ) : (
-          <EmptyState
-            icon="wand_stars"
-            title="Скоро здесь будет жарко"
-            text="Гермес уже собирает первые функции из промптов участников. Загляните через пару минут, тут появятся карточки."
-          />
-        )}
-      </Section>
+      {product.screens.length > 0 && (
+        <section className="flex flex-col gap-2">
+          <span className="text-[12px] leading-4 font-semibold tracking-[0.16em] text-muted uppercase">Что мы делаем</span>
+          <p className="text-[17px] leading-relaxed text-fg">{product.about.summary}</p>
+        </section>
+      )}
+
+      <ScreensBoard />
+
+      {/* пока есть каркас, пустое «скоро будет» не нужно: его роль играет доска экранов */}
+      {(widgets.length > 0 || product.screens.length === 0) && (
+        <Section title="Что уже умеет">
+          {widgets.length > 0 ? (
+            <WidgetGrid widgets={widgets} />
+          ) : (
+            <EmptyState
+              icon="wand_stars"
+              title="Скоро здесь будет жарко"
+              text="Гермес уже собирает первые функции из промптов участников. Загляните через пару минут, тут появятся карточки."
+            />
+          )}
+        </Section>
+      )}
 
       {sections.length > 0 && (
         <Section title="Разделы">

@@ -13,7 +13,7 @@ export function List({ children, className }: ListProps) {
     <div
       role="list"
       className={cn(
-        'divide-y divide-line overflow-hidden rounded-card bg-surface shadow-card ring-1 ring-line/70',
+        'divide-y divide-line overflow-hidden rounded-card bg-surface ring-1 ring-line',
         className,
       )}
     >
@@ -42,7 +42,7 @@ export function ListItem({ title, subtitle, icon, leading, trailing, chevron, on
     <>
       {leading ??
         (icon && (
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-[12px] bg-brand-soft text-brand-strong">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand-strong">
             <Icon name={icon} size={22} />
           </span>
         ))}

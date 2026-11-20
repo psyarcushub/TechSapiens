@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Link, useLocation } from 'react-router'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { Icon, List, Modal, cn } from '../ui'
 import { product } from '../lib/product'
 import { pathFor } from './features-context'
@@ -55,10 +56,10 @@ function TabIcon({ icon, active }: { icon: string; active: boolean }) {
     <span
       className={cn(
         'flex h-8 w-14 items-center justify-center rounded-full transition-colors duration-200',
-        active ? 'bg-brand-soft text-brand-strong' : 'text-muted',
+        active ? 'bg-brand text-on-brand' : 'text-muted',
       )}
     >
-      <Icon name={icon} size={24} fill={active} />
+      <Icon name={icon} size={22} fill={active} />
     </span>
   )
 }
@@ -68,7 +69,7 @@ function TabLabel({ active, children }: { active: boolean; children: ReactNode }
     // long names wrap to a second line instead of being cut off
     <span
       className={cn(
-        'line-clamp-2 max-w-full px-0.5 text-center text-[11px] leading-[13px] font-bold break-words',
+        'line-clamp-2 max-w-full px-0.5 text-center text-[11px] leading-[13px] font-semibold break-words',
         active ? 'text-fg' : 'text-muted',
       )}
     >
@@ -80,12 +81,14 @@ function TabLabel({ active, children }: { active: boolean; children: ReactNode }
 function SideNav({ activeId }: { activeId: string }) {
   const navPages = navPagesNow()
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-[var(--sidebar-w)] flex-col border-r border-line bg-surface lg:flex">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-[var(--sidebar-w)] flex-col bg-header text-on-header lg:flex">
       <Link to="/" className="flex items-center gap-3 px-6 pt-7 pb-6">
         <ProductMark size={44} />
         <span className="min-w-0">
-          <span className="block truncate text-[17px] leading-tight font-extrabold text-fg">{product.name}</span>
-          <span className="mt-0.5 line-clamp-2 block text-[13px] leading-snug text-muted">{product.tagline}</span>
+          <span className="line-clamp-2 block text-[18px] leading-tight font-semibold break-words">{product.name}</span>
+          <span className="mt-0.5 line-clamp-2 block text-[13px] leading-snug font-light text-on-header/65">
+            {product.tagline}
+          </span>
         </span>
       </Link>
       <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-3" aria-label="Разделы">
@@ -97,8 +100,8 @@ function SideNav({ activeId }: { activeId: string }) {
               to={pathFor(page.id)}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'flex h-11 shrink-0 items-center gap-3 rounded-[14px] px-3 text-[15px] font-semibold transition-colors',
-                active ? 'bg-brand-soft text-brand-strong' : 'text-muted hover:bg-surface-2 hover:text-fg',
+                'flex h-11 shrink-0 items-center gap-3 rounded-full px-4 text-[15px] font-semibold transition-colors',
+                active ? 'bg-brand text-on-brand' : 'text-on-header/70 hover:bg-on-header/10 hover:text-on-header',
               )}
             >
               <Icon name={page.icon} size={22} fill={active} />
@@ -107,8 +110,10 @@ function SideNav({ activeId }: { activeId: string }) {
           )
         })}
       </nav>
-      <div className="m-3 flex items-start gap-2.5 rounded-[16px] bg-surface-2 p-3.5 text-[12px] leading-snug text-muted">
-        <Icon name="groups" size={18} className="mt-px shrink-0 text-brand-strong" fill />
+      <div className="m-3 flex flex-col gap-1.5 rounded-card bg-on-header/8 p-4 text-[13px] leading-snug font-light text-on-header/70">
+        <span className="label-caps text-[11px] text-on-header">
+          Tech<span className="text-[var(--logo-pink)]">Sapiens</span>
+        </span>
         <span>Собирают участники конференции вместе с ИИ-агентом Гермесом</span>
       </div>
     </aside>
@@ -117,16 +122,16 @@ function SideNav({ activeId }: { activeId: string }) {
 
 function MobileHeader() {
   return (
-    <header className="pt-safe sticky top-0 z-20 bg-bg/85 backdrop-blur-xl lg:hidden">
+    <header className="pt-safe sticky top-0 z-20 bg-header text-on-header lg:hidden">
       <Link to="/" className="flex h-14 items-center gap-2.5 px-4">
         <ProductMark size={32} />
-        <span className="min-w-0 truncate text-[16px] font-extrabold text-fg">{product.name}</span>
+        <span className="min-w-0 truncate text-[17px] font-semibold">{product.name}</span>
       </Link>
     </header>
   )
 }
 
-/** Каркас приложения: шапка и нижняя панель на телефоне, боковое меню от 1024px. */
+/** Каркас приложения: чёрная шапка и нижняя панель на телефоне, чёрное боковое меню от 1024px. */
 export function Shell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation()
   const activeId = activeIdFrom(pathname)
@@ -144,44 +149,47 @@ export function Shell({ children }: { children: ReactNode }) {
   const moreActive = morePages.some((p) => p.id === activeId)
 
   return (
-    <div data-shell className="min-h-dvh overflow-x-clip lg:pl-[var(--sidebar-w)]">
-      <SideNav activeId={activeId} />
-      <MobileHeader />
+    // TooltipProvider нужен подсказкам shadcn (Tooltip) во всех функциях
+    <TooltipProvider>
+      <div data-shell className="min-h-dvh overflow-x-clip lg:pl-[var(--sidebar-w)]">
+        <SideNav activeId={activeId} />
+        <MobileHeader />
 
-      <main className="mx-auto w-full max-w-[var(--content-max)] px-4 pt-2 pb-[calc(var(--tabbar-h)+env(safe-area-inset-bottom)+28px)] sm:px-6 lg:px-10 lg:pt-10 lg:pb-16">
-        {children}
-      </main>
+        <main className="mx-auto w-full max-w-[var(--content-max)] px-4 pt-4 pb-[calc(var(--tabbar-h)+env(safe-area-inset-bottom)+28px)] sm:px-6 lg:px-10 lg:pt-10 lg:pb-16">
+          {children}
+        </main>
 
-      <nav
-        aria-label="Разделы"
-        className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/90 backdrop-blur-xl lg:hidden"
-      >
-        <div className="mx-auto flex h-[var(--tabbar-h)] max-w-xl items-stretch px-1">
-          {tabPages.map((page) => (
-            <TabLink key={page.id} feature={page} active={page.id === activeId} />
-          ))}
-          {overflow && (
-            <button
-              type="button"
-              onClick={() => setMoreOpen(true)}
-              aria-haspopup="dialog"
-              className="flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 pt-1.5 pb-1"
-            >
-              <TabIcon icon="more_horiz" active={moreActive} />
-              <TabLabel active={moreActive}>Ещё</TabLabel>
-            </button>
-          )}
-        </div>
-      </nav>
+        <nav
+          aria-label="Разделы"
+          className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/95 backdrop-blur-xl lg:hidden"
+        >
+          <div className="mx-auto flex h-[var(--tabbar-h)] max-w-xl items-stretch px-1">
+            {tabPages.map((page) => (
+              <TabLink key={page.id} feature={page} active={page.id === activeId} />
+            ))}
+            {overflow && (
+              <button
+                type="button"
+                onClick={() => setMoreOpen(true)}
+                aria-haspopup="dialog"
+                className="flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 pt-1.5 pb-1"
+              >
+                <TabIcon icon="more_horiz" active={moreActive} />
+                <TabLabel active={moreActive}>Ещё</TabLabel>
+              </button>
+            )}
+          </div>
+        </nav>
 
-      <Modal open={moreOpen} onClose={() => setMoreOpen(false)} title="Ещё">
-        <List>
-          {morePages.map((page) => (
-            <MoreLink key={page.id} feature={page} active={page.id === activeId} />
-          ))}
-        </List>
-      </Modal>
-    </div>
+        <Modal open={moreOpen} onClose={() => setMoreOpen(false)} title="Ещё">
+          <List>
+            {morePages.map((page) => (
+              <MoreLink key={page.id} feature={page} active={page.id === activeId} />
+            ))}
+          </List>
+        </Modal>
+      </div>
+    </TooltipProvider>
   )
 }
 
@@ -195,7 +203,7 @@ function MoreLink({ feature, active }: { feature: FeatureEntry; active: boolean 
       >
         <span
           className={cn(
-            'flex size-10 shrink-0 items-center justify-center rounded-[12px]',
+            'flex size-10 shrink-0 items-center justify-center rounded-full',
             active ? 'bg-brand text-on-brand' : 'bg-brand-soft text-brand-strong',
           )}
         >

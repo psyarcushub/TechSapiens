@@ -19,24 +19,25 @@ export interface ButtonProps extends Omit<ComponentProps<'button'>, 'children'> 
   children?: ReactNode
 }
 
+// Кнопки-таблетки TechSapiens: розовая заливка с белым текстом 600, вторичная с контуром 1.5px.
 const variants: Record<ButtonVariant, string> = {
-  primary: 'bg-brand text-on-brand shadow-card hover:brightness-105',
+  primary: 'bg-brand text-on-brand hover:brightness-110',
   secondary: 'bg-brand-soft text-brand-strong hover:brightness-[0.97]',
-  outline: 'border border-line bg-surface text-fg hover:bg-surface-2',
+  outline: 'border-[1.5px] border-current bg-transparent text-fg hover:bg-surface-2',
   ghost: 'bg-transparent text-fg hover:bg-surface-2',
-  danger: 'bg-danger text-white shadow-card hover:brightness-105',
+  danger: 'bg-danger text-white hover:brightness-105',
 }
 
 const sizes: Record<ButtonSize, string> = {
-  sm: 'h-9 gap-1.5 rounded-[12px] px-3.5 text-[14px]',
-  md: 'h-11 gap-2 rounded-[14px] px-5 text-[15px]',
-  lg: 'h-13 gap-2.5 rounded-[16px] px-6 text-[16px]',
+  sm: 'h-9 gap-1.5 px-4 text-[14px]',
+  md: 'h-11 gap-2 px-7 text-[15px]',
+  lg: 'h-14 gap-2.5 px-10 text-[17px]',
 }
 
 const iconOnly: Record<ButtonSize, string> = {
   sm: 'w-9 px-0',
   md: 'w-11 px-0',
-  lg: 'w-13 px-0',
+  lg: 'w-14 px-0',
 }
 
 const iconSizes: Record<ButtonSize, number> = { sm: 18, md: 20, lg: 22 }
@@ -62,7 +63,7 @@ export function Button({
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={cn(
-        'inline-flex shrink-0 select-none items-center justify-center font-bold whitespace-nowrap',
+        'inline-flex shrink-0 select-none items-center justify-center rounded-full font-semibold whitespace-nowrap',
         'transition-[transform,filter,background-color] duration-150 active:scale-[0.97]',
         'disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100',
         variants[variant],

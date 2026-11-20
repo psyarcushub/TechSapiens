@@ -1,0 +1,14 @@
+/*
+  Tilda Sans — шрифт сайта TechSapiens (ParaType для Tilda Publishing, 2021).
+  Лицензия SIL Open Font License 1.1, текст рядом в OFL.txt. Файл взят с сайта
+  Tilda без изменений: один вариативный файл, толщина от 250 до 900,
+  кириллица и латиница. Лежит в проекте, запросов в интернет нет.
+*/
+
+@font-face {
+  font-family: "Tilda Sans";
+  font-style: normal;
+  font-weight: 250 900;
+  font-display: swap;
+  src: url("./TildaSans-VF.woff2") format("woff2");
+}

@@ -25,7 +25,7 @@ const soft: Record<Tone, string> = {
 const solidTones: Record<Tone, string> = {
   neutral: 'bg-fg text-bg',
   brand: 'bg-brand text-on-brand',
-  accent: 'bg-accent text-on-accent',
+  accent: 'bg-[var(--accent)] text-on-accent',
   success: 'bg-success text-white',
   warning: 'bg-warning text-[#1a1200]',
   danger: 'bg-danger text-white',
@@ -36,7 +36,7 @@ export function Badge({ tone = 'neutral', solid, icon, children, className }: Ba
   return (
     <span
       className={cn(
-        'inline-flex h-6 max-w-full items-center gap-1 rounded-full px-2.5 text-[12px] font-bold whitespace-nowrap',
+        'inline-flex h-6 max-w-full items-center gap-1 rounded-full px-2.5 text-[12px] font-semibold whitespace-nowrap',
         solid ? solidTones[tone] : soft[tone],
         className,
       )}

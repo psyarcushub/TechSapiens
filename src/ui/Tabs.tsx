@@ -21,7 +21,7 @@ export function Tabs<T extends string = string>({ items, value, onChange, classN
   return (
     <div
       role="tablist"
-      className={cn('scrollbar-none flex gap-1 overflow-x-auto rounded-[16px] bg-surface-2 p-1', className)}
+      className={cn('scrollbar-none flex gap-1 overflow-x-auto rounded-full bg-surface-2 p-1', className)}
     >
       {items.map((item) => {
         const active = item.id === value
@@ -33,7 +33,7 @@ export function Tabs<T extends string = string>({ items, value, onChange, classN
             aria-selected={active}
             onClick={() => onChange(item.id)}
             className={cn(
-              'flex h-10 min-w-fit flex-1 items-center justify-center gap-1.5 rounded-[12px] px-3.5 text-[14px] font-semibold whitespace-nowrap',
+              'flex h-10 min-w-fit flex-1 items-center justify-center gap-1.5 rounded-full px-4 text-[14px] font-semibold whitespace-nowrap',
               'transition-[background-color,color,box-shadow] duration-200',
               active ? 'bg-surface text-fg shadow-card' : 'text-muted hover:text-fg',
             )}

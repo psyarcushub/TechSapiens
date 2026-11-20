@@ -19,9 +19,9 @@ export interface CardProps extends Omit<ComponentProps<'div'>, 'title'> {
 }
 
 const tones: Record<CardTone, string> = {
-  default: 'bg-surface text-fg shadow-card ring-1 ring-line/70',
+  default: 'bg-surface text-fg ring-1 ring-line',
   soft: 'bg-surface-2 text-fg',
-  brand: 'bg-brand text-on-brand shadow-float',
+  brand: 'bg-brand text-on-brand',
   tint: 'bg-brand-soft text-fg',
   accent: 'bg-accent-soft text-fg',
   outline: 'border border-line bg-transparent text-fg',
@@ -79,7 +79,7 @@ export function Card({
           {icon && (
             <span
               className={cn(
-                'flex size-10 shrink-0 items-center justify-center rounded-[12px]',
+                'flex size-10 shrink-0 items-center justify-center rounded-full',
                 tone === 'brand' ? 'bg-white/20' : 'bg-brand-soft text-brand-strong',
               )}
             >
@@ -87,7 +87,7 @@ export function Card({
             </span>
           )}
           <div className="min-w-0 flex-1 self-center">
-            {title && <div className="text-[16px] leading-snug font-bold">{title}</div>}
+            {title && <div className="text-[17px] leading-snug font-semibold">{title}</div>}
             {subtitle && (
               <div className={cn('mt-0.5 text-[13px] leading-snug', tone === 'brand' ? 'opacity-80' : 'text-muted')}>
                 {subtitle}

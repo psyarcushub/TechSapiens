@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import type { Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
@@ -40,6 +41,12 @@ export default defineConfig({
   base: './',
   cacheDir: '.cache/vite',
   plugins: [react(), tailwindcss(), contentSecurityPolicy()],
+  // время сборки версии: главная показывает «Обновлено в …»
+  define: { __BUILD_TIME__: JSON.stringify(new Date().toISOString()) },
+  resolve: {
+    // '@/components/ui/button' → src/components/ui/button (компоненты shadcn/ui)
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,

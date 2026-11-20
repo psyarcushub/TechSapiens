@@ -1,40 +1,56 @@
 /*
-  Токены оформления. Цвета бренда приходят из src/product.json:
-  src/app/theme.ts при запуске считает оттенки для светлой и тёмной темы
-  и кладёт их в переменные с окончанием -l и -d. Здесь они раскладываются
-  по ролям. В Tailwind эти роли доступны как классы: bg-surface, text-muted,
-  bg-brand, text-on-brand, bg-brand-soft, text-brand-strong и так далее
-  (полный список в AGENTS.md).
+  Токены оформления в стиле TechSapiens (techsapiens-community.com):
+  белые страницы, чёрный текст, чёрная шапка, розовый бренд, кнопки-таблетки.
+
+  Цвета бренда приходят из src/product.json: src/app/theme.ts при запуске считает
+  оттенки и кладёт их в переменные с окончанием -l (светлая тема) и -d (тёмная).
+  Здесь они раскладываются по ролям. Ниже роли связаны с переменными shadcn/ui
+  (--primary, --background, --card и т. д.), поэтому оболочка (src/ui) и компоненты
+  shadcn (src/components/ui) красятся из одних и тех же токенов.
+  Классы Tailwind на этих ролях объявлены в src/index.css, список в AGENTS.md.
+
+  Тёмная тема сама не включается: сайт всегда светлый. Класс .dark на элементе
+  делает тёмным только его содержимое (так рисуются тёмные секции, как на сайте).
 */
 
 :root {
-  /* фон и поверхности */
-  --bg: var(--bg-l, #f7f7fa);
+  /* фон и поверхности: страницы белые */
+  --bg: var(--bg-l, #ffffff);
   --surface: #ffffff;
-  --surface-2: #f1f1f6;
-  --surface-3: #e6e6ee;
-  --fg: #15161c;
-  --muted: #5c5f6e;
-  --subtle: #8b8e9c;
-  --line: #e3e3eb;
-  --overlay: rgba(12, 12, 24, 0.45);
+  --surface-2: #f1f1f1;
+  --surface-3: #e5e5e5;
+  --fg: #000000;
+  --muted: #5e5e5e;
+  --subtle: #8a8a8a;
+  --line: #e6e6e6;
+  --line-strong: #cfcfcf;
+  --overlay: rgba(0, 0, 0, 0.5);
 
-  /* бренд */
-  --brand: var(--brand-l, #5b5bd6);
+  /* чёрный и угольный: шапка, тёмные секции, афиши */
+  --ink: #000000;
+  --ink-2: #292929;
+  --on-ink: #ffffff;
+  --header: var(--ink);
+  --on-header: var(--on-ink);
+  /* «SAPIENS» в надписи TechSapiens: цвет сообщества, цвета продукта его не меняют */
+  --logo-pink: #ff4fb3;
+
+  /* бренд: по умолчанию ярко-розовый TechSapiens #FF008B */
+  --brand: var(--brand-l, #ff008b);
   --on-brand: var(--on-brand-l, #ffffff);
-  --brand-soft: var(--brand-soft-l, #ebebfa);
-  --brand-strong: var(--brand-strong-l, #4646c0);
-  --brand-line: var(--brand-line-l, #cdcdf3);
+  --brand-soft: var(--brand-soft-l, #ffe0f1);
+  --brand-strong: var(--brand-strong-l, #d10072);
+  --brand-line: var(--brand-line-l, #ffb3dc);
 
-  /* акцент */
-  --accent: var(--accent-l, #ff7a59);
+  /* акцент: по умолчанию светло-розовый #FF4FB3 */
+  --accent: var(--accent-l, #ff4fb3);
   --on-accent: var(--on-accent-l, #15161c);
-  --accent-soft: var(--accent-soft-l, #ffefea);
-  --accent-strong: var(--accent-strong-l, #b8431f);
-  --accent-line: var(--accent-line-l, #ffd2c6);
+  --accent-soft: var(--accent-soft-l, #ffe9f5);
+  --accent-strong: var(--accent-strong-l, #c2006f);
+  --accent-line: var(--accent-line-l, #ffcae8);
 
-  /* главный баннер */
-  --hero-to: var(--hero-to-l, #b569a0);
+  /* главный баннер (старое имя, оставлено для совместимости) */
+  --hero-to: var(--hero-to-l, #ff3aa2);
   --on-hero: var(--on-hero-l, #ffffff);
 
   /* состояния */
@@ -48,12 +64,12 @@
   --danger-soft: #fde8e8;
   --danger-strong: #b4232a;
 
-  /* скругления */
+  /* скругления: поля 12, карточки 16, окна 24, кнопки и метки — таблетки */
   --r-xs: 8px;
-  --r-sm: 12px;
-  --r-md: 16px;
-  --r-lg: 22px;
-  --r-xl: 28px;
+  --r-sm: 10px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
   --r-full: 999px;
 
   /* отступы */
@@ -67,10 +83,10 @@
   --space-8: 40px;
   --space-9: 56px;
 
-  /* тени */
-  --elev-1: 0 1px 2px rgba(20, 20, 50, 0.06), 0 1px 1px rgba(20, 20, 50, 0.04);
-  --elev-2: 0 10px 30px -12px rgba(20, 20, 50, 0.18), 0 2px 6px rgba(20, 20, 50, 0.05);
-  --elev-3: 0 28px 60px -18px rgba(20, 20, 50, 0.35), 0 4px 12px rgba(20, 20, 50, 0.08);
+  /* тени: на белом сайте почти без теней, карточки держатся на рамке */
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --elev-2: 0 12px 32px -14px rgba(0, 0, 0, 0.22), 0 2px 6px rgba(0, 0, 0, 0.05);
+  --elev-3: 0 28px 60px -18px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.08);
 
   /* движение */
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -85,45 +101,86 @@
   --content-max: 880px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: var(--bg-d, #101116);
-    --surface: #18191f;
-    --surface-2: #212229;
-    --surface-3: #2b2c35;
-    --fg: #f2f2f6;
-    --muted: #a5a8b6;
-    --subtle: #777a89;
-    --line: #2c2d37;
-    --overlay: rgba(0, 0, 0, 0.6);
+/* Тёмные секции и тёмная тема: включаются только классом .dark. */
+.dark {
+  --bg: var(--bg-d, #000000);
+  --surface: #141414;
+  --surface-2: #1f1f1f;
+  --surface-3: #292929;
+  --fg: #ffffff;
+  --muted: #a8a8a8;
+  --subtle: #7a7a7a;
+  --line: #2e2e2e;
+  --line-strong: #444444;
+  --overlay: rgba(0, 0, 0, 0.7);
 
-    --brand: var(--brand-d, #7c7cf0);
-    --on-brand: var(--on-brand-d, #ffffff);
-    --brand-soft: var(--brand-soft-d, #2a2a4a);
-    --brand-strong: var(--brand-strong-d, #b4b4ff);
-    --brand-line: var(--brand-line-d, #3f3f72);
+  --brand: var(--brand-d, #ff008b);
+  --on-brand: var(--on-brand-d, #ffffff);
+  --brand-soft: var(--brand-soft-d, #3d0f27);
+  --brand-strong: var(--brand-strong-d, #ff6cbc);
+  --brand-line: var(--brand-line-d, #6b1846);
 
-    --accent: var(--accent-d, #ff7a59);
-    --on-accent: var(--on-accent-d, #15161c);
-    --accent-soft: var(--accent-soft-d, #3d2620);
-    --accent-strong: var(--accent-strong-d, #ffad97);
-    --accent-line: var(--accent-line-d, #6b3a2d);
+  --accent: var(--accent-d, #ff4fb3);
+  --on-accent: var(--on-accent-d, #15161c);
+  --accent-soft: var(--accent-soft-d, #3d1a2e);
+  --accent-strong: var(--accent-strong-d, #ff8fcf);
+  --accent-line: var(--accent-line-d, #6e2b52);
 
-    --hero-to: var(--hero-to-d, #b569a0);
-    --on-hero: var(--on-hero-d, #ffffff);
+  --hero-to: var(--hero-to-d, #ff3aa2);
+  --on-hero: var(--on-hero-d, #ffffff);
 
-    --success: #3dd68c;
-    --success-soft: #16301f;
-    --success-strong: #74e8ac;
-    --warning: #ffb547;
-    --warning-soft: #3a2a10;
-    --warning-strong: #ffd08a;
-    --danger: #ff6369;
-    --danger-soft: #3b1a1c;
-    --danger-strong: #ff9da1;
+  --success: #3dd68c;
+  --success-soft: #16301f;
+  --success-strong: #74e8ac;
+  --warning: #ffb547;
+  --warning-soft: #3a2a10;
+  --warning-strong: #ffd08a;
+  --danger: #ff6369;
+  --danger-soft: #3b1a1c;
+  --danger-strong: #ff9da1;
 
-    --elev-1: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --elev-2: 0 12px 32px -12px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.3);
-    --elev-3: 0 28px 60px -18px rgba(0, 0, 0, 0.75), 0 4px 12px rgba(0, 0, 0, 0.4);
-  }
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --elev-2: 0 12px 32px -12px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.4);
+  --elev-3: 0 28px 60px -18px rgba(0, 0, 0, 0.8), 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/*
+  Роли shadcn/ui поверх токенов. Объявлены и на :root, и на .dark, чтобы внутри
+  тёмной секции компоненты shadcn тоже брали тёмные значения.
+
+  Имена --muted и --accent у темы заняты раньше: --muted это серый текст
+  (класс text-muted), --accent это светло-розовый цвет (text-accent).
+  Поэтому фон shadcn для ролей muted и accent лежит в --muted-background и
+  --accent-background, а в src/index.css классы bg-muted и bg-accent
+  направлены на них. Итог: bg-muted светло-серый фон, как в shadcn,
+  text-muted и text-muted-foreground серый текст.
+*/
+:root,
+.dark {
+  --background: var(--bg);
+  --foreground: var(--fg);
+  --card: var(--surface);
+  --card-foreground: var(--fg);
+  --popover: var(--surface);
+  --popover-foreground: var(--fg);
+  --primary: var(--brand);
+  --primary-foreground: var(--on-brand);
+  --secondary: var(--brand-soft);
+  --secondary-foreground: var(--brand-strong);
+  --muted-background: var(--surface-2);
+  --muted-foreground: var(--muted);
+  --accent-background: var(--brand-soft);
+  --accent-foreground: var(--fg);
+  --destructive: var(--danger);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--brand);
+  /* rounded-xl у shadcn = --radius × 1.4 = 16 px, как rounded-card */
+  --radius: calc(var(--r-lg) / 1.4);
+
+  --chart-1: var(--brand);
+  --chart-2: var(--accent);
+  --chart-3: #d0499d;
+  --chart-4: #5f004d;
+  --chart-5: var(--ink-2);
 }

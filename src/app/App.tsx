@@ -12,11 +12,11 @@ import type { FeatureEntry } from './types'
 function PageTitle({ feature }: { feature: FeatureEntry }) {
   return (
     <header className="mb-5 flex items-center gap-3 lg:mb-8">
-      <span className="flex size-11 shrink-0 items-center justify-center rounded-[14px] bg-brand-soft text-brand-strong lg:size-12">
-        <Icon name={feature.icon} size={26} fill />
+      <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand text-on-brand lg:size-12">
+        <Icon name={feature.icon} size={24} />
       </span>
       <div className="min-w-0 flex-1">
-        <h1 className="text-[26px] leading-tight font-extrabold tracking-tight text-fg lg:text-[32px]">{feature.title}</h1>
+        <h1 className="text-[26px] leading-tight font-semibold text-fg lg:text-[32px]">{feature.title}</h1>
         {feature.authors.length > 0 && (
           <p className="mt-0.5 truncate text-[13px] text-muted">Придумали: {feature.authors.join(', ')}</p>
         )}
