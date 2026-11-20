@@ -14,7 +14,7 @@ export function ProductMark({ size = 36, className }: { size?: number; className
   )
 }
 
-/** Главный баннер в виде афиши TechSapiens: тёмный фон с розовым свечением, название и фраза из product.json. */
+/** Главный баннер: тёмный фон с розовым свечением, название и фраза продукта из product.json. */
 export function ProductHero() {
   return (
     <section className="poster relative overflow-hidden rounded-sheet px-6 pt-6 pb-8 sm:px-8 sm:pt-8 sm:pb-10 lg:px-12 lg:pt-12 lg:pb-14">
@@ -28,10 +28,7 @@ export function ProductHero() {
         aria-hidden
       />
       <div className="relative">
-        <p className="label-caps text-[12px]">
-          Tech<span className="text-[var(--logo-pink)]">Sapiens</span> Project
-        </p>
-        <span className="mt-6 mb-5 flex size-16 items-center justify-center rounded-full bg-white/10 ring-2 ring-brand lg:size-20">
+        <span className="mb-5 flex size-16 items-center justify-center rounded-full bg-white/10 ring-2 ring-brand lg:size-20">
           <Icon name={product.icon} size={34} fill />
         </span>
         <h1 className="max-w-2xl text-[34px] leading-[1.05] font-semibold tracking-tight text-balance sm:text-[48px] lg:text-[60px]">

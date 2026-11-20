@@ -110,12 +110,6 @@ function SideNav({ activeId }: { activeId: string }) {
           )
         })}
       </nav>
-      <div className="m-3 flex flex-col gap-1.5 rounded-card bg-on-header/8 p-4 text-[13px] leading-snug font-light text-on-header/70">
-        <span className="label-caps text-[11px] text-on-header">
-          Tech<span className="text-[var(--logo-pink)]">Sapiens</span> Project
-        </span>
-        <span>Собирают участники конференции вместе с ИИ-агентом Гермесом</span>
-      </div>
     </aside>
   )
 }

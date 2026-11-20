@@ -17,9 +17,6 @@ function PageTitle({ feature }: { feature: FeatureEntry }) {
       </span>
       <div className="min-w-0 flex-1">
         <h1 className="text-[26px] leading-tight font-semibold text-fg lg:text-[32px]">{feature.title}</h1>
-        {feature.authors.length > 0 && (
-          <p className="mt-0.5 truncate text-[13px] text-muted">Придумали: {feature.authors.join(', ')}</p>
-        )}
       </div>
     </header>
   )
