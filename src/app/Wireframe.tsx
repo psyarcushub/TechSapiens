@@ -39,7 +39,7 @@ function Sketch() {
       className="flex flex-col gap-4 rounded-card border-2 border-dashed border-line bg-surface p-4"
       aria-label="Заготовка экрана: здесь появится интерфейс"
     >
-      <Label>Каркас · экран пока пустой</Label>
+      <Label>Экран пока пустой</Label>
       <div className="h-28 rounded-[12px] bg-surface-2" />
       {[0, 1, 2].map((i) => (
         <div key={i} className="flex items-center gap-3">
@@ -87,7 +87,7 @@ function Examples({ screen }: { screen: ProductScreen }) {
   if (screen.examples.length === 0) return null
   return (
     <div className="flex flex-col gap-2">
-      <Label>Что сюда можно прислать</Label>
+      <Label>Примеры промптов для этого экрана</Label>
       {screen.examples.map((example) => (
         <p key={example} className="rounded-[12px] bg-surface-2 px-4 py-3 text-[15px] leading-snug text-fg">
           «{example}»
@@ -102,8 +102,7 @@ export function WireframeScreen({ screen }: { screen: ProductScreen }) {
   return (
     <div className="flex flex-col gap-6">
       <p className="text-[17px] leading-relaxed text-muted">
-        {sentence(screen.purpose) || 'Этот экран ещё пустой.'} Экран появится, когда Гермес соберёт его из промптов
-        участников.
+        {sentence(screen.purpose) || 'Здесь пока пусто.'} Гермес наполнит этот экран по промптам участников.
       </p>
       <Sketch />
       <Examples screen={screen} />
@@ -124,7 +123,7 @@ export function BuiltAt({ className }: { className?: string }) {
     label = ''
   }
   if (!label) return null
-  return <p className={cn('text-[13px] text-muted', className)}>Версия обновлена в {label}</p>
+  return <p className={cn('text-[13px] text-muted', className)}>Сайт обновлён в {label}</p>
 }
 
 /** Доска экранов на главной: что уже собрано, а что ждёт промпта. */
@@ -138,7 +137,7 @@ export function ScreensBoard() {
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <Label>Каркас продукта</Label>
+        <Label>Ход работы</Label>
         <h2 className="text-[24px] leading-tight font-semibold text-fg">Экраны, которые мы собираем</h2>
         <p className="text-[15px] text-muted">
           Готово {ready} из {screens.length}. Пустой экран ждёт вашего промпта.

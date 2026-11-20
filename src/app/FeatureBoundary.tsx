@@ -53,14 +53,14 @@ export class FeatureBoundary extends Component<Props, State> {
           <Icon name="construction" size={24} fill />
         </span>
         <div className="min-w-0 flex-1">
-          <div className="text-[15px] font-bold text-fg">Эта часть сломалась, Гермес чинит</div>
+          <div className="text-[15px] font-bold text-fg">Эта часть не загрузилась</div>
           <div className="mt-0.5 text-[13px] text-muted">Остальное работает как обычно.</div>
         </div>
         {compact ? (
           <Button size="sm" variant="outline" icon="refresh" aria-label="Попробовать ещё раз" onClick={this.retry} />
         ) : (
           <Button size="sm" variant="outline" icon="refresh" onClick={this.retry}>
-            Ещё раз
+            Повторить
           </Button>
         )}
       </div>

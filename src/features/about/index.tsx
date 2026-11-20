@@ -34,7 +34,7 @@ function AboutPage() {
       </Card>
 
       <div className="grid grid-cols-3 gap-3">
-        <Stat icon="lightbulb" value={formatNumber(about.ideasCount)} label="идей прислали" tone="accent" />
+        <Stat icon="lightbulb" value={formatNumber(about.ideasCount)} label="идей прислано" tone="accent" />
         <Stat icon="groups" value={formatNumber(about.participantsCount)} label="участников" />
         <Stat icon="extension" value={formatNumber(own.length)} label="функций собрано" tone="success" />
       </div>
@@ -76,7 +76,7 @@ function AboutPage() {
           <EmptyState
             compact
             icon="hourglass_top"
-            title="Идеи ещё разбираются"
+            title="Гермес ещё разбирает идеи"
             text="Как только Гермес выберет стартап, здесь появятся группы идей и то, что каждая дала продукту."
           />
         )}
@@ -96,8 +96,8 @@ function AboutPage() {
           <EmptyState
             compact
             icon="do_not_disturb_on"
-            title="Пока без запретов"
-            text="Список появится вместе с решением Гермеса: что в продукт сознательно не берём."
+            title="Пока ничего не исключили"
+            text="Когда Гермес выберет стартап, здесь появится то, что он сознательно не берёт в продукт."
           />
         )}
       </Section>
@@ -120,7 +120,7 @@ function AboutPage() {
 
       <p className="flex items-center justify-center gap-2 px-4 text-center text-[13px] leading-snug text-subtle">
         <Icon name="favorite" size={16} fill className="shrink-0 text-accent" />
-        Идеи и промпты от людей, код от Гермеса
+        Идеи и промпты от участников, код от Гермеса и разработчиков из зала
       </p>
     </div>
   )

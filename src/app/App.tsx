@@ -33,7 +33,7 @@ function HomeFallback() {
       {widgets.length > 0 ? (
         <WidgetGrid widgets={widgets} />
       ) : (
-        <EmptyState title="Скоро здесь появятся функции" text="Гермес уже собирает первую версию продукта." />
+        <EmptyState title="Скоро здесь появятся функции" text="Гермес уже работает над продуктом." />
       )}
     </div>
   )
@@ -46,7 +46,7 @@ function NotFound() {
       <EmptyState
         icon="explore_off"
         title="Такой страницы нет"
-        text="Возможно, её выключили или ещё не собрали. Загляните на главную."
+        text="Возможно, её убрали или ещё не доделали."
         action={
           <Button icon="home" onClick={() => navigate('/')}>
             На главную
@@ -73,7 +73,7 @@ function PageHost({ id }: { id: string }) {
     return (
       <div data-page-id={feature.id} key={feature.id} className="anim-page">
         <PageTitle feature={feature} />
-        <Section subtitle="Этот блок живёт на главной странице.">
+        <Section subtitle="Этот блок также есть на главной.">
           <WidgetCard feature={feature} />
         </Section>
       </div>
