@@ -1,6 +1,8 @@
 import { Link } from 'react-router'
 import { ArrowRightIcon } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import type { FeatureManifest } from '../../app/types'
 import { pathFor, useFeatures } from '../../app/features-context'
 import { WidgetGrid } from '../../app/FeatureView'
@@ -12,11 +14,12 @@ import { StartArt } from './start-art'
 export const feature: FeatureManifest = {
   id: 'home',
   title: 'Главная',
+  short: 'Главная',
   icon: 'home',
   kind: 'page',
   order: 0,
   component: HomePage,
-  authors: ['NataliGenia'],
+  authors: ['NataliGenia', 'Katerina G.'],
 }
 
 function HomePage() {
@@ -71,6 +74,8 @@ function HomePage() {
           text="А пока можно выбрать любимую эмблему."
         />
       )}
+
+      <Monetization />
     </div>
   )
 }
@@ -89,6 +94,14 @@ function SurrealStart({ hasTraining, hasVote }: { hasTraining: boolean; hasVote:
           {product.name}
         </h1>
         <p className="max-w-xs text-lg leading-snug text-on-ink/90">{product.tagline}</p>
+        <div className="flex max-w-prose flex-col gap-2">
+          <p className="text-base leading-snug">
+            «Корона и конфетти» помогает начинающим игровым командам придумать миссию для аркадного шутера и понять, кого позвать в команду.
+          </p>
+          <p className="text-sm leading-snug text-on-ink/90">
+            <span className="font-semibold">Пример:</span> Вдохновитесь историей королевы, придумайте миссию и узнайте, какой специалист поможет её собрать.
+          </p>
+        </div>
         {(hasTraining || hasVote) && (
           <div className="mt-1 flex max-w-full flex-wrap items-center gap-2">
             {hasTraining && (
@@ -109,6 +122,25 @@ function SurrealStart({ hasTraining, hasVote }: { hasTraining: boolean; hasVote:
       <div className="relative aspect-[5/4] min-w-0 overflow-hidden rounded-xl sm:aspect-auto sm:min-h-76">
         <div className="absolute inset-0"><StartArt /></div>
       </div>
+    </section>
+  )
+}
+
+function Monetization() {
+  return (
+    <section aria-labelledby="home-monetization-heading">
+      <Card>
+        <CardHeader className="gap-2">
+          <Badge variant="secondary">Гипотеза монетизации</Badge>
+          <h2 id="home-monetization-heading" className="text-2xl leading-tight lg:text-4xl">
+            Как проект может зарабатывать
+          </h2>
+        </CardHeader>
+        <CardContent className="gap-2 text-base leading-snug">
+          <p><span className="font-semibold">Сейчас:</span> базовые инструменты бесплатны.</p>
+          <p><span className="font-semibold">Идея на будущее:</span> продавать студиям наборы шаблонов миссий. Это гипотеза, а не действующий тариф.</p>
+        </CardContent>
+      </Card>
     </section>
   )
 }
