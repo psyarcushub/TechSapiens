@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { CheckIcon, PackageIcon, TruckIcon } from 'lucide-react'
+import { CheckIcon, PackageIcon, PlusIcon, TruckIcon, UtensilsIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ScreenBlocks } from '../../app/ScreenBlocks'
 import type { FeatureManifest } from '../../app/types'
+import { countLabel } from '../../lib/format'
 import { product } from '../../lib/product'
 import { useLocalState } from '../../lib/store'
 
@@ -19,7 +20,7 @@ export const feature: FeatureManifest = {
   kind: 'page',
   order: 90,
   component: GameStudio,
-  authors: ['NataliGenia', 'Dima E.'],
+  authors: ['NataliGenia', 'Dima E.', 'Artem G.'],
 }
 
 type Kit = 'paper-targets' | 'confetti'
@@ -46,7 +47,67 @@ function GameStudio() {
     <div className="flex flex-col gap-8">
       {screen && <ScreenBlocks blocks={screen.blocks} screenId={screen.id} />}
       <PropOrder />
+      <TeamBuffet />
     </div>
+  )
+}
+
+const BUFFET_ITEMS = [
+  { id: 'compote', name: 'Компот' },
+  { id: 'buckwheat', name: 'Гречка' },
+  { id: 'prunes', name: 'Чернослив' },
+] as const
+
+function portionCount(value: number | undefined) {
+  return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0 ? value : 0
+}
+
+function TeamBuffet() {
+  const [portions, setPortions] = useLocalState<Partial<Record<(typeof BUFFET_ITEMS)[number]['id'], number>>>(
+    'game-studio:buffet-portions',
+    {},
+  )
+
+  return (
+    <section aria-labelledby="game-studio-buffet">
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <h2 id="game-studio-buffet" className="flex items-center gap-2 text-2xl">
+              <UtensilsIcon aria-hidden="true" className="size-6 shrink-0 text-primary" />
+              Буфет команды
+            </h2>
+          </CardTitle>
+          <CardDescription>Демо — без заказа и доставки</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul className="flex flex-col gap-2">
+            {BUFFET_ITEMS.map(({ id, name }) => (
+              <li key={id} className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-lg bg-muted p-3">
+                <div>
+                  <p className="text-base font-semibold">{name}</p>
+                  <p aria-live="polite" aria-atomic="true" className="text-sm tabular-nums text-muted-foreground">
+                    <span className="sr-only">{name}: </span>
+                    {countLabel(portionCount(portions[id]), ['порция', 'порции', 'порций'])}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  className="min-h-11"
+                  aria-label={`Ещё порцию — ${name}`}
+                  onClick={() => setPortions((previous) => ({ ...previous, [id]: portionCount(previous[id]) + 1 }))}
+                >
+                  <PlusIcon aria-hidden="true" data-icon="inline-start" />
+                  Ещё порцию
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+    </section>
   )
 }
 
