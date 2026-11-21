@@ -209,10 +209,17 @@ function Stats({ block }: { block: ScreenBlock }) {
               <span className="text-sm text-muted-foreground">
                 {item.title}
               </span>
+              {/* пояснение к числу, часто с источником: «Gallup, данные 2023 года» */}
+              {item.text && item.meta && (
+                <span className="text-xs text-muted-foreground">{item.text}</span>
+              )}
             </CardContent>
           </Card>
         ))}
       </div>
+      {block.text && (
+        <p className="text-sm text-muted-foreground">{block.text}</p>
+      )}
     </section>
   );
 }

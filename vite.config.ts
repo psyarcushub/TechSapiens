@@ -5,18 +5,19 @@ import type { Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// Политика безопасности собранного сайта: всё только со своего адреса,
-// никаких запросов в интернет, iframe, eval и встроенных скриптов.
+// Политика безопасности собранного сайта: код только свой (никаких чужих
+// скриптов, iframe, eval и встроенных скриптов), а данные и картинки можно
+// брать из интернета по https: курсы, погода, открытые API.
 // Вставляется только при сборке: в режиме разработки Vite и React
 // пользуются встроенными скриптами, и с ней `npm run dev` не работал бы.
 const CSP = [
   "default-src 'self'",
   "script-src 'self'",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
-  "media-src 'self' data: blob:",
-  "connect-src 'self'",
+  "media-src 'self' data: blob: https:",
+  "connect-src 'self' https: wss:",
   "worker-src 'self' blob:",
   "frame-src 'none'",
   "object-src 'none'",

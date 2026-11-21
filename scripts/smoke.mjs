@@ -5,7 +5,10 @@
 // Собирает необработанные ошибки страницы, console.error и
 // window.__FEATURE_ERRORS__, блокирует и записывает любые запросы не к своему
 // серверу, снимает каждую страницу в smoke/<id>.png и пишет smoke-report.json:
-//   { ok, shellOk, pages: [{ id, ok, errors }], failedFeatures, blockedRequests, durationMs }
+//   { ok, shellOk, pages: [{ id, ok, errors }], failedFeatures, blockedRequests, externalRequests, durationMs }
+// blockedRequests — то, что режет политика безопасности (чужой код, iframe, адреса без https): это провал.
+// externalRequests — запросы данных в интернет: в прогоне они остаются без ответа, как при пропавшей сети,
+// и страница обязана это пережить, поэтому сами по себе они не провал.
 // Код выхода 0, если оболочка и главная отрисовались (упавшие функции только
 // перечисляются), иначе 1.
 //
@@ -88,6 +91,7 @@ const started = Date.now()
 const elapsed = () => Date.now() - started
 
 const blocked = new Set()
+const external = new Set()
 let server = null
 let browser = null
 let finished = false
@@ -395,12 +399,14 @@ function buildReport({ shellOk, visits, skipped, fatal }) {
   const pages = [...entries.values()]
   const failedFeatures = [...failed].sort()
   const blockedRequests = [...blocked].slice(0, 50)
+  const externalRequests = [...external].slice(0, 50)
   return {
     ok: Boolean(shellOk) && failedFeatures.length === 0 && blockedRequests.length === 0 && pages.every((p) => p.ok),
     shellOk: Boolean(shellOk),
     pages,
     failedFeatures,
     blockedRequests,
+    externalRequests,
     durationMs: elapsed(),
   }
 }
@@ -411,10 +417,11 @@ function writeReport(report) {
   for (const p of report.pages) {
     console.log(`${p.ok ? '  ok ' : ' FAIL'} ${p.id}${p.errors.length ? ': ' + p.errors.slice(0, 3).join(' | ') : ''}`)
   }
-  if (report.blockedRequests.length) console.log(`smoke: заблокированы запросы наружу: ${report.blockedRequests.join(', ')}`)
+  if (report.blockedRequests.length) console.log(`smoke: политика безопасности отклонила: ${report.blockedRequests.join(', ')}`)
+  if (report.externalRequests?.length) console.log(`smoke: запросы в интернет (в прогоне без ответа): ${report.externalRequests.join(', ')}`)
   console.log(
     `smoke: ok=${report.ok} shellOk=${report.shellOk} страниц=${report.pages.length} ` +
-      `упали=[${report.failedFeatures.join(', ')}] внешних запросов=${report.blockedRequests.length} ` +
+      `упали=[${report.failedFeatures.join(', ')}] отклонено=${report.blockedRequests.length} в интернет=${report.externalRequests?.length ?? 0} ` +
       `за ${(report.durationMs / 1000).toFixed(1)} с`,
   )
 }
@@ -466,15 +473,17 @@ async function main() {
       }
     })
   })
+  // запросы наружу остаются без ответа: так проверяется, что виджет живых данных
+  // не падает и показывает запасные данные, когда сервис молчит
   await context.route('**/*', (route) => {
     const url = route.request().url()
     if (isLocalUrl(url, origin)) return route.continue()
-    if (!isInjected(url)) blocked.add(url)
-    return route.abort('blockedbyclient')
+    if (!isInjected(url)) external.add(url)
+    return route.abort('internetdisconnected')
   })
   if (typeof context.routeWebSocket === 'function') {
     await context.routeWebSocket(/.*/, (ws) => {
-      blocked.add(ws.url())
+      external.add(ws.url())
       ws.close()
     })
   }
